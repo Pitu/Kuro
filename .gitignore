@@ -1,0 +1,6 @@
+node_modules/
+stickers/*
+!stickers/.gitkeep 
+config.json
+stickers.json
+.DS_Store

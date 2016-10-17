@@ -1,0 +1,22 @@
+{
+    "name": "Kuro",
+    "version": "0.1.0",
+    "description": "Self bot with utilities",
+    "author": "kanadeko",
+	"main": "kuro.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/kanadeko/Kuro"
+	},
+	"bugs": {
+		"url": "https://github.com/kanadeko/Kuro/issues"
+	},
+	"engines": {
+		"node": ">=6.0.0"
+	},
+    "license": "MIT",
+    "dependencies": {
+        "eris": "github:abalabahaha/eris",
+        "require-reload": "^0.2.2"
+    }
+}
