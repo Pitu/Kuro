@@ -3,6 +3,8 @@
 
 An easy to use self bot with different utilities built on top of [Eris](https://github.com/abalabahaha/eris/). NodeJS version 6+ is ***REQUIRED***
 
+[> Check this video to see how it works!](https://my.mixtape.moe/pwcrem.webm)
+
 ## Installing:
 1. Clone the repo with `git clone https://github.com/kanadeko/Kuro`
 2. Run `npm install`
@@ -23,7 +25,7 @@ An easy to use self bot with different utilities built on top of [Eris](https://
 Note that every command will edit/delete the message afterwards to provide a better experience while interacting with the bot.
 
 - `/sticker name`  
-  Kuro will replace this messahe with the sticker associated to the given `name`,
+  Kuro will replace this message with the sticker associated to the given `name`,
   
 - `/sticker add name`  
   By running this command while attaching an image, Kuro will try to upload it and use the `name` you specified for future use.
