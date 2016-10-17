@@ -1,6 +1,7 @@
 let Eris = require("eris");
 let reload = require('require-reload')(require)
-let http = require('https');
+let http = require('http');
+let https = require('https');
 let fs = require('fs');
 let _config = require('./config.json');
 let _stickers; // = require('./stickers.json');
@@ -118,8 +119,7 @@ kuro.registerCommand("sticker", (msg, args) => {
         }
     }
 
-
-}, {requirements:{"userIDs":[_config.userID]}});
+});
 
 /*
     Usage: /purge _number_
@@ -135,7 +135,7 @@ kuro.registerCommand("purge", (msg, args) => {
             filtered.length = msgCount + 1;
             filtered.map((msg, i) => kuro.deleteMessage(msg.channel.id, msg.id));
         });
-}, {requirements:{"userIDs": [_config.userID]}});
+});
 
 /* HELPER FUNCTIONS */
 let addNewSticker = function(name, msg){
@@ -175,7 +175,12 @@ let reloadStickers = function(){
 
 let downloadImage = function(name, url, dest, msg) {
     let file = fs.createWriteStream(dest);
-    let request = http.get(url, function(response) {
+
+    let protocol = https;
+    if (url.indexOf("http://") == 0)
+        protocol = http;
+
+    let request = protocol.get(url, function(response) {
         response.pipe(file);
         file.on('finish', function() {
             file.close(addNewSticker(name, msg));  // close() is async, call cb after close completes.
