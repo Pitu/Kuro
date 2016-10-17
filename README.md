@@ -4,10 +4,17 @@
 An easy to use self bot with different utilities built on top of [Eris](https://github.com/abalabahaha/eris/). NodeJS version 6+ is ***REQUIRED***
 
 ## Installing:
-1. Clone the repo
+1. Clone the repo with `git clone https://github.com/kanadeko/Kuro`
 2. Run `npm install`
 3. Copy config.sample.json to config.json and fill the required data.
 4. Run the bot with `node Kuro.js`
+
+---
+
+## Getting the data for the config.json file:
+1. To get the token, bring up the Developer Tools on the discord website and type `localStorage.token`. That should print your personal token to use with this bot
+2. The owner should be your own username, in the format `kanadeko#1234`
+3. To get your userID, enable `Developer Mode` on discord under Settings > Appearance and then right click your name on the user list and `Copy ID`
 
 ---
 
