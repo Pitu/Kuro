@@ -1,6 +1,6 @@
 let Eris = require("eris");
 let reload = require('require-reload')(require)
-let http = require('http');
+let http = require('https');
 let fs = require('fs');
 let _config = require('./config.json');
 let _stickers; // = require('./stickers.json');
@@ -66,13 +66,13 @@ kuro.registerCommand("sticker", (msg, args) => {
 
                 // Treat this as the url of the file to add
                 if(args[2] !== undefined){
-                    let url = args[2].replace('https://', 'http://');
+                    let url = args[2];
                     downloadImage(name, url, dest, msg);
                 }else{
                     // If there is no url of the file, let's see if there is an attachment
                     if(msg.attachments.length > 0){
                         if('proxy_url' in msg.attachments[0]){
-                            let url = msg.attachments[0].proxy_url.replace('https://', 'http://');
+                            let url = msg.attachments[0].proxy_url;
                             downloadImage(name, url, dest, msg);
                         }else{
                             kuro.editMessage(msg.channel.id, msg.id, "Eto.. this is weird, there was no [proxy_url] in the uploaded object.").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
