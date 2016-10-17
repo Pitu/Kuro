@@ -122,12 +122,12 @@ kuro.registerCommand("sticker", (msg, args) => {
 }, {requirements:{"userIDs":[_config.userID]}});
 
 /*
-    Usage: /prune _number_
+    Usage: /purge _number_
     Kuro will get the last _number_ messages from the channel where the command
     was triggered.
 */
 
-kuro.registerCommand("prune", (msg, args) => {
+kuro.registerCommand("purge", (msg, args) => {
     let msgCount = parseInt(args);
     kuro.getMessages(msg.channel.id, 100)
         .then((messages) => {
