@@ -53,40 +53,65 @@ kuro.on("ready", () => {
 
 kuro.registerCommand("sticker", (msg, args) => {
 
+    if(args.length === 0)
+        return;
+
     let command = args[0];
     if (command.toString().trim() === 'add'){
-        // Treat this as the name of the new sticker
-        if(args[1] !== undefined){
-            // First lets check if that name is already used.
-            if(args[1] in _stickers){
-                kuro.editMessage(msg.channel.id, msg.id, "You already used that name.").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
-            }else{
 
-                let name = args[1];
-                let dest = './stickers/' + args[1] + '.png';
-
-                // Treat this as the url of the file to add
-                if(args[2] !== undefined){
-                    let url = args[2];
-                    downloadImage(name, url, dest, msg);
-                }else{
-                    // If there is no url of the file, let's see if there is an attachment
-                    if(msg.attachments.length > 0){
-                        if('proxy_url' in msg.attachments[0]){
-                            let url = msg.attachments[0].proxy_url;
-                            downloadImage(name, url, dest, msg);
-                        }else{
-                            kuro.editMessage(msg.channel.id, msg.id, "Eto.. this is weird, there was no [proxy_url] in the uploaded object.").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
-                        }
-                    }else{
-                        kuro.editMessage(msg.channel.id, msg.id, "You didnt supply either a url nor attachment, you dumdum.").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
-                    }
-                }
-            }
-
-        }else{
-            kuro.editMessage(msg.channel.id, msg.id, "No name supplied, dummy.").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+        // Treat this as the name of the new sticker. Return error if name wasnt provided
+        if(args[1] === undefined){
+            kuro.editMessage(msg.channel.id, msg.id, "You forgot the sticker name, dumdum").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+            return;
         }
+
+        let name = args[1];
+
+        // Is the name of the sticker already used?
+        if(name in _stickers){
+            kuro.editMessage(msg.channel.id, msg.id, "You already used that name.").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+            return;
+        }
+
+        // Prepare the destination container
+        let dest = './stickers/' + name;
+        let url = '';
+
+        // Stupid discord renaming stuff, breaks everything
+        let discordFilename = '';
+
+        if(args[2] !== undefined)
+            url = args[2];
+        else
+            if(msg.attachments.length > 0)
+                if('proxy_url' in msg.attachments[0]){
+                    url = msg.attachments[0].proxy_url;
+                    discordFilename = msg.attachments[0].filename;
+                }
+
+        if(url == ''){
+            // Welp, couldn't figure out a url
+            kuro.editMessage(msg.channel.id, msg.id, "You didnt supply either a url nor attachment, or there was an error with the attachment.").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+            return;
+        }
+
+        // Try and gather the extension of the file
+        let re = /(?:\.([^.]+))?$/;
+        let ext;
+
+        if(discordFilename != '')
+            ext = re.exec(discordFilename)[1];
+        else
+            ext = re.exec(url)[1];
+
+        if(ext === undefined){
+            kuro.editMessage(msg.channel.id, msg.id, "The file you are linking or trying to attach doesn't have an extension. Kuro needs that thingy").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+            return;
+        }
+
+        dest = dest + '.' + ext;
+        downloadImage(name, url, dest, ext, msg);
+
     }else if (command.toString().trim() === 'del'){
         if(args[1] !== undefined){
             delSticker(args[1], msg);
@@ -103,14 +128,18 @@ kuro.registerCommand("sticker", (msg, args) => {
         // Soon
 
     }else{
+
         let name = command;
-        if(name in _stickers){
-            let img = fs.readFileSync('stickers/' + _stickers[name]);
-            kuro.createMessage(msg.channel.id, '', {file: img, name: _stickers[name]});
-            kuro.deleteMessage(msg.channel.id, msg.id);
-        }else{
+
+        if(_stickers[name] === undefined){
             kuro.editMessage(msg.channel.id, msg.id, "That sticker doesnt exist. rip").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+            return;
         }
+
+        let img = fs.readFileSync('stickers/' + _stickers[name]);;
+        kuro.editMessage(msg.channel.id, msg.id, "Loading...");
+        kuro.createMessage(msg.channel.id, '', {file: img, name: _stickers[name]}).then(() => kuro.deleteMessage(msg.channel.id, msg.id));
+
     }
 
 });
@@ -164,13 +193,12 @@ kuro.registerCommand("status", (msg, args) => {
 });
 
 /* HELPER FUNCTIONS */
-let addNewSticker = function(name, msg){
+let addNewSticker = function(name, ext, msg){
 
-    _stickers[name] = name + '.png';
+    _stickers[name] = name + '.' + ext;
     let json = JSON.stringify(_stickers);
     fs.writeFile('stickers.json', json, 'utf8', function(){
         reloadStickers();
-        kuro.deleteMessage(msg.channel.id, msg.id);
         kuro.createMessage(msg.channel.id, 'Sticker added succesfully fam \o/').then(function(newmsg){
             setTimeout( () => kuro.deleteMessage(newmsg.channel.id, newmsg.id), 3000);
         });
@@ -199,7 +227,7 @@ let reloadStickers = function(){
     _stickers = reload('./stickers.json');
 }
 
-let downloadImage = function(name, url, dest, msg) {
+let downloadImage = function(name, url, dest, ext, msg) {
     let file = fs.createWriteStream(dest);
 
     let protocol = https;
@@ -209,7 +237,7 @@ let downloadImage = function(name, url, dest, msg) {
     let request = protocol.get(url, function(response) {
         response.pipe(file);
         file.on('finish', function() {
-            file.close(addNewSticker(name, msg));  // close() is async, call cb after close completes.
+            file.close(addNewSticker(name, ext, msg));  // close() is async, call cb after close completes.
         });
     }).on('error', function(err) { // Handle errors
         fs.unlink(dest); // Delete the file async. (But we don't check the result)
