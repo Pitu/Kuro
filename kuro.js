@@ -132,6 +132,13 @@ kuro.registerCommand("purge", (msg, args) => {
 });
 
 /*
+    Usage: /status online|idle|dnd|offline
+    Since this is a self bot, even if you close Discord you remain connected through
+    Kuro. This command will enable you to set the status of your account whenever
+    you're not on the app. So if you want to appear as 'Busy' whenever you're offline
+    you can just /status dnd
+*/
+
 kuro.registerCommand("status", (msg, args) => {
 
     if(args.length > 0){
@@ -141,21 +148,20 @@ kuro.registerCommand("status", (msg, args) => {
             case 'dnd':
             case 'invisible':
                 kuro.editStatus(args[0]);
-                kuro.deleteMessage(msg.channel.id, msg.id);
+                kuro.editMessage(msg.channel.id, msg.id, "Next time you're offline your status will be set to: " + args[0]).then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
                 break;
             default:
                 kuro.editMessage(msg.channel.id, msg.id, "Wrong option. You need to specify away|busy|online|invisible").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
                 break;
         }
     }else{
-        kuro.createMessage(msg.channel.id, 'Your current status is: ').then(function(newmsg){
+        kuro.createMessage(msg.channel.id, 'Your offline status is: ' + msg.member.status).then(function(newmsg){
             setTimeout( () => kuro.deleteMessage(newmsg.channel.id, newmsg.id), 2000);
         });
         kuro.deleteMessage(msg.channel.id, msg.id);
     }
 
 });
-*/
 
 /* HELPER FUNCTIONS */
 let addNewSticker = function(name, msg){

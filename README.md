@@ -26,18 +26,21 @@ Note that every command will edit/delete the message afterwards to provide a bet
 
 - `/sticker name`  
   Kuro will replace this message with the sticker associated to the given `name`,
-  
+
 - `/sticker add name`  
   By running this command while attaching an image, Kuro will try to upload it and use the `name` you specified for future use.
-  
+
 - `/sticker add name url`  
   Kuro will upload the given image `url` and use the `name` you specified for future use.
-  
+
 - `/sticker del name`  
   Kuro will try and delete the sticker with the given `name`.
-  
+
 - `/sticker list`  
   Kuro will print a list of all your stickers
-  
+
+- `/status online|idle|dnd|offline`  
+  The status you want to appear as whenever you're offline, since using Kuro will make discord think you're always online.
+
 - `/purge number`  
   Kuro will fetch your latest 100 messages on the channel that triggered this command and delete the last `number` messages.
