@@ -93,12 +93,11 @@ kuro.registerCommand("sticker", (msg, args) => {
         }
     }else if (command.toString().trim() === 'list'){
 
-        let list = '```';
-        for(sticker in _stickers){
+        let list = "";
+        for(sticker in _stickers)
             list = list + ' ' + sticker + '\n';
-        }
-        list = list + '```';
-        kuro.editMessage(msg.channel.id, msg.id, list).then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 5000));;
+
+        kuro.editMessage(msg.channel.id, msg.id, '```' + list + '```').then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 5000));;
 
     }else if (command.toString().trim() === 'show'){
         // Soon
@@ -106,14 +105,9 @@ kuro.registerCommand("sticker", (msg, args) => {
     }else{
         let name = command;
         if(name in _stickers){
-
             let img = fs.readFileSync('stickers/' + _stickers[name]);
-            kuro.createMessage(msg.channel.id, '', {
-                file: img,
-                name: _stickers[name]
-            });
+            kuro.createMessage(msg.channel.id, '', {file: img, name: _stickers[name]});
             kuro.deleteMessage(msg.channel.id, msg.id);
-
         }else{
             kuro.editMessage(msg.channel.id, msg.id, "That sticker doesnt exist. rip").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
         }
@@ -136,6 +130,32 @@ kuro.registerCommand("purge", (msg, args) => {
             filtered.map((msg, i) => kuro.deleteMessage(msg.channel.id, msg.id));
         });
 });
+
+/*
+kuro.registerCommand("status", (msg, args) => {
+
+    if(args.length > 0){
+        switch(args[0]){
+            case 'idle':
+            case 'online':
+            case 'dnd':
+            case 'invisible':
+                kuro.editStatus(args[0]);
+                kuro.deleteMessage(msg.channel.id, msg.id);
+                break;
+            default:
+                kuro.editMessage(msg.channel.id, msg.id, "Wrong option. You need to specify away|busy|online|invisible").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+                break;
+        }
+    }else{
+        kuro.createMessage(msg.channel.id, 'Your current status is: ').then(function(newmsg){
+            setTimeout( () => kuro.deleteMessage(newmsg.channel.id, newmsg.id), 2000);
+        });
+        kuro.deleteMessage(msg.channel.id, msg.id);
+    }
+
+});
+*/
 
 /* HELPER FUNCTIONS */
 let addNewSticker = function(name, msg){
