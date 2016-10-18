@@ -199,6 +199,7 @@ let addNewSticker = function(name, ext, msg){
     let json = JSON.stringify(_stickers);
     fs.writeFile('stickers.json', json, 'utf8', function(){
         reloadStickers();
+        kuro.deleteMessage(msg.channel.id, msg.id);
         kuro.createMessage(msg.channel.id, 'Sticker added succesfully fam \o/').then(function(newmsg){
             setTimeout( () => kuro.deleteMessage(newmsg.channel.id, newmsg.id), 3000);
         });
