@@ -14,6 +14,13 @@ An easy to use self bot with different utilities built on top of [Eris](https://
 
 ---
 
+## What's new:
+1. Awesome new way to see your sticker list!
+2. Kind of
+3. Fixed some issues, refactored some code
+
+---
+
 ## Overview of the config.sample.json file:
 ```json
 {
