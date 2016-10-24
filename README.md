@@ -6,6 +6,7 @@ An easy to use self bot with different utilities built on top of [Eris](https://
 [> Check this video to see how it works!](https://my.mixtape.moe/pwcrem.webm)
 
 ## Installing:
+0. If coming from a previous version update your `config.json` file and `npm install` before starting the bot!
 1. Clone the repo with `git clone https://github.com/kanadeko/Kuro`
 2. Run `npm install`
 3. Copy config.sample.json to config.json and fill the required data.
