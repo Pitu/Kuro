@@ -18,7 +18,7 @@
     "dependencies": {
         "eris": "github:abalabahaha/eris",
         "require-reload": "^0.2.2",
-        "node-static": "^0.7.9",
+        "express": "^4.14.0",
         "request": "^2.74.0"
     }
 }

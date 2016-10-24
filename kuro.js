@@ -4,7 +4,7 @@ let http        = require('http');
 let https       = require('https');
 let fs          = require('fs');
 let _config     = require('./config.json');
-let static      = require('node-static');
+let express     = require('express');
 let request     = require('request');
 
 let _stickers;
@@ -209,11 +209,9 @@ let startServer = function(msg){
     getExternalIP((err, body) => {
         if (!err) {
 
-            let file = new static.Server('./stickers');
-
             // This is such a bad approach
             // DELET THIS
-            fs.writeFileSync('./stickers/stickers.json', fs.readFileSync('./stickers.json'));
+            fs.writeFileSync('./public/stickers.json', fs.readFileSync('./stickers.json'));
 
             if(stickerServer !== undefined){
                 kuro.editMessage(msg.channel.id, msg.id, 'To view your sticker list go to http://' + body + ':' + _config.server.port + ' for the next ' + _config.server.duration + ' minutes.').then(() => delMessage(msg, 5000));
@@ -221,41 +219,12 @@ let startServer = function(msg){
                 return;
             }
 
-            stickerServer = http.createServer(function (request, response) {
-                request.addListener('end', function () {
-                    file.serve(request, response);
-                }).resume();
-            }).listen(_config.server.port);
+            stickerServer = express();
+            stickerServer.use(express.static('public'));
+            stickerServer.use(express.static('stickers'));
+            stickerServer.listen(_config.server.port);
 
-            let sockets = {}, nextSocketId = 0;
-            stickerServer.on('connection', function (socket) {
-                // Add a newly connected socket
-                var socketId = nextSocketId++;
-                sockets[socketId] = socket;
-
-                // Remove the socket when it closes
-                socket.once('close', function () {
-                    delete sockets[socketId];
-                });
-
-                socket.setTimeout(0);
-            });
-
-            let closeServer = function(){
-
-                // Close the server
-                stickerServer.close();
-
-                // Destroy all open sockets
-                for (var socketId in sockets) {
-                    //console.log('socket', socketId, 'destroyed');
-                    sockets[socketId].destroy();
-                }
-
-                stickerServer = undefined;
-            };
-
-            setTimeout( () => closeServer(), (_config.server.duration * 60 * 1000));
+            setTimeout( () => stickerServer.close(), (_config.server.duration * 60 * 1000));
             kuro.editMessage(msg.channel.id, msg.id, 'To view your sticker list go to http://' + body + ':' + _config.server.port + ' for the next ' + _config.server.duration + ' minutes.').then(() => delMessage(msg, 5000));
             delMessage(msg);
 

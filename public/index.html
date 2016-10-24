@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <style>
+            li {
+                display: block;
+                width: 200px;
+                float: left;
+                margin-right: 50px;
+                margin-bottom: 50px;
+                height: 200px;
+            }
+
+            span {
+                display: block;
+                text-align: center;
+                font-size: 16px;
+                margin-top: 10px;
+            }
+
+            img {
+                width: 200px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div>
+            <ul id='stickers'></ul>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <script type="text/javascript">
+
+            $(function(){
+                console.log('Ready!');
+                $.getJSON("stickers.json", function(json) {
+                    console.log(json);
+                    $.each( json, function( key, value ) {
+                        $("<li><img src='" + value + "'/><span>" + key + "</span></li>").appendTo('#stickers');
+                    });
+                });
+            })
+        </script>
+    </body>
+</html>
