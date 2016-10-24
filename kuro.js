@@ -1,10 +1,10 @@
-let Eris = require("eris");
-let reload = require('require-reload')(require)
-let http = require('http');
-let https = require('https');
-let fs = require('fs');
-let _config = require('./config.json');
-let _stickers; // = require('./stickers.json');
+let Eris        = require('eris');
+let reload      = require('require-reload')(require);
+let http        = require('http');
+let https       = require('https');
+let fs          = require('fs');
+let _config     = require('./config.json');
+let _stickers;
 
 try {
     _stickers = reload('./stickers.json');
@@ -17,20 +17,20 @@ try {
 }
 
 let kuro = new Eris.CommandClient(_config.token, { userAccount: true }, {
-    description: "A nice selfbot built in eris",
+    description: 'A nice selfbot built in eris',
     owner: _config.owner,
-    prefix: "/",
+    prefix: '/',
     ignoreSelf: false,
     defaultHelpCommand: false,
     defaultCommandOptions: {
         requirements: {
-            "userIDs": [_config.userID]
+            'userIDs': [_config.userID]
         }
     }
 });
 
-kuro.on("ready", () => {
-    console.log("[Kuro]: Ready!");
+kuro.on('ready', () => {
+    console.log('[Kuro]: Ready!');
 });
 
 /*
@@ -51,7 +51,7 @@ kuro.on("ready", () => {
     triggered the command.
 */
 
-kuro.registerCommand("sticker", (msg, args) => {
+kuro.registerCommand('sticker', (msg, args) => {
 
     if(args.length === 0)
         return;
@@ -61,7 +61,7 @@ kuro.registerCommand("sticker", (msg, args) => {
 
         // Treat this as the name of the new sticker. Return error if name wasnt provided
         if(args[1] === undefined){
-            kuro.editMessage(msg.channel.id, msg.id, "You forgot the sticker name, dumdum").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+            kuro.editMessage(msg.channel.id, msg.id, 'You forgot the sticker name, dumdum').then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
             return;
         }
 
@@ -69,7 +69,7 @@ kuro.registerCommand("sticker", (msg, args) => {
 
         // Is the name of the sticker already used?
         if(name in _stickers){
-            kuro.editMessage(msg.channel.id, msg.id, "You already used that name.").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+            kuro.editMessage(msg.channel.id, msg.id, 'You already used that name.').then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
             return;
         }
 
@@ -89,9 +89,9 @@ kuro.registerCommand("sticker", (msg, args) => {
                     discordFilename = msg.attachments[0].filename;
                 }
 
-        if(url == ''){
+        if(url === ''){
             // Welp, couldn't figure out a url
-            kuro.editMessage(msg.channel.id, msg.id, "You didnt supply either a url nor attachment, or there was an error with the attachment.").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+            kuro.editMessage(msg.channel.id, msg.id, 'You didnt supply either a url nor attachment, or there was an error with the attachment.').then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
             return;
         }
 
@@ -99,7 +99,7 @@ kuro.registerCommand("sticker", (msg, args) => {
         let re = /(?:\.([^.]+))?$/;
         let ext;
 
-        if(discordFilename != '')
+        if(discordFilename !== '')
             ext = re.exec(discordFilename)[1];
         else
             ext = re.exec(url)[1];
@@ -118,11 +118,11 @@ kuro.registerCommand("sticker", (msg, args) => {
         }
     }else if (command.toString().trim() === 'list'){
 
-        let list = "";
-        for(sticker in _stickers)
+        let list = '';
+        for(let sticker in _stickers)
             list = list + ' ' + sticker + '\n';
 
-        kuro.editMessage(msg.channel.id, msg.id, '```' + list + '```').then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 5000));;
+        kuro.editMessage(msg.channel.id, msg.id, '```' + list + '```').then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 5000));
 
     }else if (command.toString().trim() === 'show'){
         // Soon
@@ -132,12 +132,12 @@ kuro.registerCommand("sticker", (msg, args) => {
         let name = command;
 
         if(_stickers[name] === undefined){
-            kuro.editMessage(msg.channel.id, msg.id, "That sticker doesnt exist. rip").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+            kuro.editMessage(msg.channel.id, msg.id, 'That sticker doesnt exist. rip').then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
             return;
         }
 
-        let img = fs.readFileSync('stickers/' + _stickers[name]);;
-        kuro.editMessage(msg.channel.id, msg.id, "Loading...");
+        let img = fs.readFileSync('stickers/' + _stickers[name]);
+        kuro.editMessage(msg.channel.id, msg.id, 'Loading...');
         kuro.createMessage(msg.channel.id, '', {file: img, name: _stickers[name]}).then(() => kuro.deleteMessage(msg.channel.id, msg.id));
 
     }
@@ -150,13 +150,13 @@ kuro.registerCommand("sticker", (msg, args) => {
     was triggered.
 */
 
-kuro.registerCommand("purge", (msg, args) => {
+kuro.registerCommand('purge', (msg, args) => {
     let msgCount = parseInt(args);
     kuro.getMessages(msg.channel.id, 100)
         .then((messages) => {
             let filtered = messages.filter(m => m.author.id === kuro.user.id);
             filtered.length = msgCount + 1;
-            filtered.map((msg, i) => kuro.deleteMessage(msg.channel.id, msg.id));
+            filtered.map((msg) => kuro.deleteMessage(msg.channel.id, msg.id));
         });
 });
 
@@ -168,7 +168,7 @@ kuro.registerCommand("purge", (msg, args) => {
     you can just /status dnd
 */
 
-kuro.registerCommand("status", (msg, args) => {
+kuro.registerCommand('status', (msg, args) => {
 
     if(args.length > 0){
         switch(args[0]){
@@ -177,10 +177,10 @@ kuro.registerCommand("status", (msg, args) => {
             case 'dnd':
             case 'invisible':
                 kuro.editStatus(args[0]);
-                kuro.editMessage(msg.channel.id, msg.id, "Next time you're offline your status will be set to: " + args[0]).then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+                kuro.editMessage(msg.channel.id, msg.id, 'Next time you are offline your status will be set to: ' + args[0]).then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
                 break;
             default:
-                kuro.editMessage(msg.channel.id, msg.id, "Wrong option. You need to specify away|busy|online|invisible").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+                kuro.editMessage(msg.channel.id, msg.id, 'Wrong option. You need to specify away|busy|online|invisible').then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
                 break;
         }
     }else{
@@ -205,7 +205,7 @@ let addNewSticker = function(name, ext, msg){
         });
     });
 
-}
+};
 
 let delSticker = function(name, msg){
 
@@ -215,34 +215,34 @@ let delSticker = function(name, msg){
         let json = JSON.stringify(_stickers);
         fs.writeFile('stickers.json', json, 'utf8', function(){
             reloadStickers();
-            kuro.editMessage(msg.channel.id, msg.id, "The sticker was removed o7").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+            kuro.editMessage(msg.channel.id, msg.id, 'The sticker was removed o7').then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
         });
 
     }else{
-        kuro.editMessage(msg.channel.id, msg.id, "There is no sticker by that name, you wonderful person.").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+        kuro.editMessage(msg.channel.id, msg.id, 'There is no sticker by that name, you wonderful person.').then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
     }
 
-}
+};
 
 let reloadStickers = function(){
     _stickers = reload('./stickers.json');
-}
+};
 
 let downloadImage = function(name, url, dest, ext, msg) {
     let file = fs.createWriteStream(dest);
 
     let protocol = https;
-    if (url.indexOf("http://") == 0)
+    if (url.indexOf('http://') === 0)
         protocol = http;
 
-    let request = protocol.get(url, function(response) {
+    protocol.get(url, function(response) {
         response.pipe(file);
         file.on('finish', function() {
             file.close(addNewSticker(name, ext, msg));  // close() is async, call cb after close completes.
         });
     }).on('error', function(err) { // Handle errors
         fs.unlink(dest); // Delete the file async. (But we don't check the result)
-        kuro.editMessage(msg.channel.id, msg.id, "***Error:*** " + err.message);
+        kuro.editMessage(msg.channel.id, msg.id, '***Error:*** ' + err.message);
     });
 };
 
