@@ -244,11 +244,11 @@ let startServer = function(msg){
             let closeServer = function(){
 
                 // Close the server
-                stickerServer.close(function () { console.log('Server closed!'); });
+                stickerServer.close();
 
                 // Destroy all open sockets
                 for (var socketId in sockets) {
-                    console.log('socket', socketId, 'destroyed');
+                    //console.log('socket', socketId, 'destroyed');
                     sockets[socketId].destroy();
                 }
 
@@ -332,7 +332,7 @@ function getExternalIP (callback) {
             if(/^(?:(?:2[0-4]\d|25[0-5]|1\d{2}|[1-9]?\d)\.){3}(?:2[0-4]\d|25[0-5]|1\d{2}|[1-9]?\d)$/.test(body))
                 return callback(null, body);
             else{
-                console.log(body);
+                //console.log(body);
                 return callback('error');
             }
         });
