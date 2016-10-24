@@ -4,7 +4,11 @@ let http        = require('http');
 let https       = require('https');
 let fs          = require('fs');
 let _config     = require('./config.json');
+let static      = require('node-static');
+let request     = require('request');
+
 let _stickers;
+let stickerServer;
 
 try {
     _stickers = reload('./stickers.json');
@@ -61,7 +65,7 @@ kuro.registerCommand('sticker', (msg, args) => {
 
         // Treat this as the name of the new sticker. Return error if name wasnt provided
         if(args[1] === undefined){
-            kuro.editMessage(msg.channel.id, msg.id, 'You forgot the sticker name, dumdum').then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+            kuro.editMessage(msg.channel.id, msg.id, 'You forgot the sticker name, dumdum').then(() => delMessage(msg));
             return;
         }
 
@@ -69,7 +73,7 @@ kuro.registerCommand('sticker', (msg, args) => {
 
         // Is the name of the sticker already used?
         if(name in _stickers){
-            kuro.editMessage(msg.channel.id, msg.id, 'You already used that name.').then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+            kuro.editMessage(msg.channel.id, msg.id, 'You already used that name.').then(() => delMessage(msg));
             return;
         }
 
@@ -91,7 +95,7 @@ kuro.registerCommand('sticker', (msg, args) => {
 
         if(url === ''){
             // Welp, couldn't figure out a url
-            kuro.editMessage(msg.channel.id, msg.id, 'You didnt supply either a url nor attachment, or there was an error with the attachment.').then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+            kuro.editMessage(msg.channel.id, msg.id, 'You didnt supply either a url nor attachment, or there was an error with the attachment.').then(() => delMessage(msg));
             return;
         }
 
@@ -105,7 +109,7 @@ kuro.registerCommand('sticker', (msg, args) => {
             ext = re.exec(url)[1];
 
         if(ext === undefined){
-            kuro.editMessage(msg.channel.id, msg.id, "The file you are linking or trying to attach doesn't have an extension. Kuro needs that thingy").then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+            kuro.editMessage(msg.channel.id, msg.id, "The file you are linking or trying to attach doesn't have an extension. Kuro needs that thingy").then(() => delMessage(msg));
             return;
         }
 
@@ -118,11 +122,19 @@ kuro.registerCommand('sticker', (msg, args) => {
         }
     }else if (command.toString().trim() === 'list'){
 
-        let list = '';
-        for(let sticker in _stickers)
-            list = list + ' ' + sticker + '\n';
+        /*Depending on the configuration specified, we either return a list
+        of all the stickers or launch a http server trying to grab the
+        external ip of the computer the script is running on.*/
 
-        kuro.editMessage(msg.channel.id, msg.id, '```' + list + '```').then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 5000));
+        if(_config.server.enabled === true)
+            startServer(msg);
+        else{
+            let list = '';
+            for(let sticker in _stickers)
+                list = list + ' ' + sticker + '\n';
+
+            kuro.editMessage(msg.channel.id, msg.id, '```' + list + '```').then(() => delMessage(msg, 5000));
+        }
 
     }else if (command.toString().trim() === 'show'){
         // Soon
@@ -132,13 +144,13 @@ kuro.registerCommand('sticker', (msg, args) => {
         let name = command;
 
         if(_stickers[name] === undefined){
-            kuro.editMessage(msg.channel.id, msg.id, 'That sticker doesnt exist. rip').then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
+            kuro.editMessage(msg.channel.id, msg.id, 'That sticker doesnt exist. rip').then(() => delMessage(msg));
             return;
         }
 
         let img = fs.readFileSync('stickers/' + _stickers[name]);
         kuro.editMessage(msg.channel.id, msg.id, 'Loading...');
-        kuro.createMessage(msg.channel.id, '', {file: img, name: _stickers[name]}).then(() => kuro.deleteMessage(msg.channel.id, msg.id));
+        kuro.createMessage(msg.channel.id, '', {file: img, name: _stickers[name]}).then(() => delMessage(msg, 0));
 
     }
 
@@ -170,29 +182,96 @@ kuro.registerCommand('purge', (msg, args) => {
 
 kuro.registerCommand('status', (msg, args) => {
 
-    if(args.length > 0){
-        switch(args[0]){
-            case 'idle':
-            case 'online':
-            case 'dnd':
-            case 'invisible':
-                kuro.editStatus(args[0]);
-                kuro.editMessage(msg.channel.id, msg.id, 'Next time you are offline your status will be set to: ' + args[0]).then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
-                break;
-            default:
-                kuro.editMessage(msg.channel.id, msg.id, 'Wrong option. You need to specify away|busy|online|invisible').then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
-                break;
-        }
-    }else{
-        kuro.createMessage(msg.channel.id, 'Your offline status is: ' + msg.member.status).then(function(newmsg){
-            setTimeout( () => kuro.deleteMessage(newmsg.channel.id, newmsg.id), 2000);
-        });
-        kuro.deleteMessage(msg.channel.id, msg.id);
+    if(args.length === 0){
+        kuro.editMessage(msg.channel.id, msg.id, 'Your offline status is: ' + msg.member.status).then(() => delMessage(msg));
+        return;
+    }
+
+    switch(args[0]){
+        case 'idle':
+        case 'online':
+        case 'dnd':
+        case 'invisible':
+            kuro.editStatus(args[0]);
+            kuro.editMessage(msg.channel.id, msg.id, 'Next time you are offline your status will be set to: ' + args[0]).then(() => delMessage(msg));
+            break;
+        default:
+            kuro.editMessage(msg.channel.id, msg.id, 'Wrong option. You need to specify away|busy|online|invisible').then(() => delMessage(msg));
+            break;
     }
 
 });
 
 /* HELPER FUNCTIONS */
+let startServer = function(msg){
+
+    // Can we get an external IP?
+    getExternalIP((err, body) => {
+        if (!err) {
+
+            let file = new static.Server('./stickers');
+
+            // This is such a bad approach
+            // DELET THIS
+            fs.writeFileSync('./stickers/stickers.json', fs.readFileSync('./stickers.json'));
+
+            if(stickerServer !== undefined){
+                kuro.editMessage(msg.channel.id, msg.id, 'To view your sticker list go to http://' + body + ':' + _config.server.port + ' for the next ' + _config.server.duration + ' minutes.').then(() => delMessage(msg, 5000));
+                delMessage(msg);
+                return;
+            }
+
+            stickerServer = http.createServer(function (request, response) {
+                request.addListener('end', function () {
+                    file.serve(request, response);
+                }).resume();
+            }).listen(_config.server.port);
+
+            let sockets = {}, nextSocketId = 0;
+            stickerServer.on('connection', function (socket) {
+                // Add a newly connected socket
+                var socketId = nextSocketId++;
+                sockets[socketId] = socket;
+
+                // Remove the socket when it closes
+                socket.once('close', function () {
+                    delete sockets[socketId];
+                });
+
+                socket.setTimeout(0);
+            });
+
+            let closeServer = function(){
+
+                // Close the server
+                stickerServer.close(function () { console.log('Server closed!'); });
+
+                // Destroy all open sockets
+                for (var socketId in sockets) {
+                    console.log('socket', socketId, 'destroyed');
+                    sockets[socketId].destroy();
+                }
+
+                stickerServer = undefined;
+            };
+
+            setTimeout( () => closeServer(), (_config.server.duration * 60 * 1000));
+            kuro.editMessage(msg.channel.id, msg.id, 'To view your sticker list go to http://' + body + ':' + _config.server.port + ' for the next ' + _config.server.duration + ' minutes.').then(() => delMessage(msg, 5000));
+            delMessage(msg);
+
+        } else {
+            kuro.editMessage(msg.channel.id, msg.id, 'Unfortunately we couldnt get your external IP.').then(() => delMessage(msg));
+        }
+    });
+
+};
+
+let delMessage = function(msg, delay){
+    if (typeof delay === 'undefined' || delay === null)
+        delay = 3000;
+    setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), delay);
+};
+
 let addNewSticker = function(name, ext, msg){
 
     _stickers[name] = name + '.' + ext;
@@ -245,5 +324,21 @@ let downloadImage = function(name, url, dest, ext, msg) {
         kuro.editMessage(msg.channel.id, msg.id, '***Error:*** ' + err.message);
     });
 };
+
+function getExternalIP (callback) {
+    if(_config.server.islocal === false){
+        request('http://wtfismyip.com/text', (err, res, body) => {
+            body = body.toString().trim();
+            if(/^(?:(?:2[0-4]\d|25[0-5]|1\d{2}|[1-9]?\d)\.){3}(?:2[0-4]\d|25[0-5]|1\d{2}|[1-9]?\d)$/.test(body))
+                return callback(null, body);
+            else{
+                console.log(body);
+                return callback('error');
+            }
+        });
+    }else{
+        return callback(null, '127.0.0.1');
+    }
+}
 
 kuro.connect();

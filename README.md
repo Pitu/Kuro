@@ -13,6 +13,32 @@ An easy to use self bot with different utilities built on top of [Eris](https://
 
 ---
 
+## Overview of the config.sample.json file:
+```json
+{
+    "token": "YOUR-ACCOUNT-TOKEN",
+    "owner": "YOUR-USERNAME",
+    "userID" : "YOUR-USER-ID",
+    "server":{
+        "enabled": false,
+        "islocal": false,
+        "port": 8080,
+        "duration": 1
+    }
+}
+```
+
+---
+
+## Important note about the server section on the config.json:
+We're rolling out an experimental feature to enable the user to see all of their stickers in action by creating a local server and sending back the public ip to browse them.
+Due to the nature of how this works, it means that the public IP of the server you're hosting the bot in will be publicly printed in chat, so use this feature with caution.
+If this feature is enabled by setting `"enabled": true` we recommend only running `/sticker list` on a private channel and not a public one.
+
+If `"islocal"` is set to `true`, the bot will believe it's running on the same computer you're using discord so instead of printing your public ip it will print `http://127.0.0.1:PORT`
+
+---
+
 ## Getting the data for the config.json file:
 1. To get the token, bring up the Developer Tools on the discord website and type `localStorage.token`. That should print your personal token to use with this bot
 2. The owner should be your own username, in the format `kanadeko#1234`
@@ -49,7 +75,9 @@ Note that every command will edit/delete the message afterwards to provide a bet
 
 - If the added sticker is a gifv, instead of saving it just store the link to it so discord shows the preview, since if you attach it it could go over the 8mb limit and there is no preview available.  
 
-- Make that the `del` command also deletes the file associated with the sticker  
+- Make that the `del` command also deletes the file associated with the sticker.  
+
+- Make the `/sticker list` website less cancer.  
 
 ## Known Bugs
 
