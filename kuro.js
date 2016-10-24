@@ -226,8 +226,6 @@ let startServer = function(msg){
 
             setTimeout( () => stickerServer.close(), (_config.server.duration * 60 * 1000));
             kuro.editMessage(msg.channel.id, msg.id, 'To view your sticker list go to http://' + body + ':' + _config.server.port + ' for the next ' + _config.server.duration + ' minutes.').then(() => delMessage(msg, 5000));
-            delMessage(msg);
-
         } else {
             kuro.editMessage(msg.channel.id, msg.id, 'Unfortunately we couldnt get your external IP.').then(() => delMessage(msg));
         }
