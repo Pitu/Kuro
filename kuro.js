@@ -208,7 +208,6 @@ kuro.registerCommand('status', (msg, args) => {
     entered above.
 */
 
-/*
 kuro.registerCommand('playing', (msg, args) => {
     if(args.length === 0){
         kuro.editStatus({});
@@ -221,7 +220,6 @@ kuro.registerCommand('playing', (msg, args) => {
     kuro.editStatus({name: text});
     kuro.editMessage(msg.channel.id, msg.id, 'Succesfully changed your playing status o7').then(() => delMessage(msg));
 });
-*/
 
 /* HELPER FUNCTIONS */
 let startServer = function(msg){
