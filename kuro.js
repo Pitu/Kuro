@@ -202,6 +202,19 @@ kuro.registerCommand('status', (msg, args) => {
 
 });
 
+/*
+    Usage: /playing string
+    It will change the 'Playing' status below the users name to the string
+    entered above.
+*/
+
+kuro.registerCommand('playing', (msg, args) => {
+    if(args.length === 0)
+        return;
+
+    kuro.editStatus({name: args.join(' ')});
+});
+
 /* HELPER FUNCTIONS */
 let startServer = function(msg){
 
