@@ -216,7 +216,6 @@ kuro.registerCommand('playing', (msg, args) => {
     }
 
     let text = args.join(' ');
-    console.log(text);
     kuro.editStatus({name: text});
     kuro.editMessage(msg.channel.id, msg.id, 'Succesfully changed your playing status o7').then(() => delMessage(msg));
 });
