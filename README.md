@@ -45,6 +45,8 @@ If this feature is enabled by setting `"enabled": true` we recommend only runnin
 
 If `"islocal"` is set to `true`, the bot will believe it's running on the same computer you're using discord so instead of printing your public ip it will print `http://127.0.0.1:PORT`
 
+`"duration"` sets in minutes the amount of time the url will work. With the default config, 1 minute after typing `/sticker list` the url will stop working until you issue the command again.
+
 ---
 
 ## Getting the data for the config.json file:
