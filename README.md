@@ -76,6 +76,9 @@ Note that every command will edit/delete the message afterwards to provide a bet
 - `/status online|idle|dnd|offline`  
   The status you want to appear as whenever you're offline, since using Kuro will make discord think you're always online.
 
+- `/playing string`  
+  This will change the 'Playing' status below your username to the string entered above. Note that you won't be able to see the status but everyone else will, this is a limitation with discord itself and not the bot.
+
 - `/purge number`  
   Kuro will fetch your latest 100 messages on the channel that triggered this command and delete the last `number` messages.
 

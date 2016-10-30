@@ -205,7 +205,8 @@ kuro.registerCommand('status', (msg, args) => {
 /*
     Usage: /playing string
     It will change the 'Playing' status below the users name to the string
-    entered above.
+    entered above. Note that you won't be able to see the status but everyone
+    else will, this is a limitation with discord itself and not the bot.
 */
 
 kuro.registerCommand('playing', (msg, args) => {
