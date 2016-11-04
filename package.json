@@ -16,7 +16,7 @@
 	},
     "license": "MIT",
     "dependencies": {
-        "eris": "github:abalabahaha/eris",
+        "eris": "github:abalabahaha/eris#dev",
         "require-reload": "^0.2.2",
         "express": "^4.14.0",
         "request": "^2.74.0"
