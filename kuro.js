@@ -221,6 +221,25 @@ kuro.registerCommand('playing', (msg, args) => {
     kuro.editMessage(msg.channel.id, msg.id, 'Succesfully changed your playing status o7').then(() => delMessage(msg));
 });
 
+/*
+    Usage: /regional string
+    Kuro will try to spell your string using regional indicators, just
+    for the sake of being annoying.
+*/
+
+kuro.registerCommand('regional', (msg, args) => {
+    if(args.length === 0){
+        kuro.editStatus({});
+        kuro.editMessage(msg.channel.id, msg.id, 'You gotta write a message bub').then(() => delMessage(msg));
+        return;
+    }
+
+    let text = args.join(' ').split('');
+    let message = getRegionalIndicators(text);
+
+    kuro.editMessage(msg.channel.id, msg.id, message);
+});
+
 /* HELPER FUNCTIONS */
 let startServer = function(msg){
 
@@ -309,6 +328,19 @@ let downloadImage = function(name, url, dest, ext, msg) {
         fs.unlink(dest); // Delete the file async. (But we don't check the result)
         kuro.editMessage(msg.channel.id, msg.id, '***Error:*** ' + err.message);
     });
+};
+
+function getRegionalIndicators(text){
+
+    let message = "";
+
+    for(let i = 0; i < text.length; i++)
+        if(text[i] === ' ')
+            message = message + text[i];
+        else
+            message = message + ':regional_indicator_' + text[i] + ':';
+
+    return message;
 };
 
 function getExternalIP (callback) {
