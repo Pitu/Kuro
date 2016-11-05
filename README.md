@@ -84,6 +84,9 @@ Note that every command will edit/delete the message afterwards to provide a bet
 - `/purge number`  
   Kuro will fetch your latest 100 messages on the channel that triggered this command and delete the last `number` messages.
 
+- `/regional string`  
+  Kuro will try to spell your string using regional indicators, just for the sake of being annoying.
+
 ## TODO list
 
 - If the added sticker is a gifv, instead of saving it just store the link to it so discord shows the preview, since if you attach it it could go over the 8mb limit and there is no preview available.  
