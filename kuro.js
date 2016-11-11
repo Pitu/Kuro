@@ -168,7 +168,7 @@ kuro.registerCommand('purge', (msg, args) => {
         .then((messages) => {
             let filtered = messages.filter(m => m.author.id === kuro.user.id);
             filtered.length = msgCount + 1;
-            filtered.map((msg) => kuro.deleteMessage(msg.channel.id, msg.id));
+            filtered.map((msg) => delMessage(msg, 0));
         });
 });
 
@@ -240,6 +240,53 @@ kuro.registerCommand('regional', (msg, args) => {
     kuro.editMessage(msg.channel.id, msg.id, message);
 });
 
+/*
+    Usage: /reaction string
+    Kuro will try to react to the last post with regional indicators for the
+    sake of being super annoying.
+*/
+
+kuro.registerCommand('reaction', (msg, args) => {
+    kuro.getMessages(msg.channel.id, 2).then((msgArray) => {
+
+        delMessage(msg, 0);
+        let unicode = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯', '🇰', '🇱', '🇲', '🇳', '🇴', '🇵', '🇶', '🇷', '🇸', '🇹', '🇺', '🇻', '🇼', '🇽', '🇾', '🇿', '0⃣', '1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣'];
+        let alpha = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        let chars = args[0].split('');
+        let int = 0;
+
+        //pilar mvp
+        (function loop() {
+            msgArray[1].addReaction(unicode[alpha.indexOf(chars[int].toLowerCase())]).then(() => {
+                if (chars.length !== int) {
+                    int++; loop();
+                }
+            });
+        }());
+    });
+});
+
+/*
+    Usage: /reactions
+    This is super fucking annoying, don't use please.
+    Gets a list of all the server emotes, scrambles them and picks 20 to react
+    to the last message on the chat.
+*/
+
+kuro.registerCommand('reactions', (msg) => {
+    kuro.getMessages(msg.channel.id, 2).then((msgArray) => {
+
+        delMessage(msg, 0);
+        msg.guild.getEmojis().then((emojis) => {
+            emojis.shuffle();
+            for( let i = 0; i < emojis.length; i++ )
+                if(i < 19)
+                    msgArray[1].addReaction(emojis[i].name + ':' + emojis[i].id);
+        });
+
+    });
+});
+
 /* HELPER FUNCTIONS */
 let startServer = function(msg){
 
@@ -274,38 +321,32 @@ let startServer = function(msg){
 let delMessage = function(msg, delay){
     if (typeof delay === 'undefined' || delay === null)
         delay = 3000;
-    setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), delay);
+    setTimeout( () => msg.delete(), delay);
 };
 
 let addNewSticker = function(name, ext, msg){
-
     _stickers[name] = name + '.' + ext;
     let json = JSON.stringify(_stickers);
     fs.writeFile('stickers.json', json, 'utf8', function(){
         reloadStickers();
-        kuro.deleteMessage(msg.channel.id, msg.id);
+        delMessage(msg, 0);
         kuro.createMessage(msg.channel.id, 'Sticker added succesfully fam \o/').then(function(newmsg){
-            setTimeout( () => kuro.deleteMessage(newmsg.channel.id, newmsg.id), 3000);
+            delMessage(newmsg, 3000);
         });
     });
-
 };
 
 let delSticker = function(name, msg){
-
     if(name in _stickers){
-
         delete(_stickers[name]);
         let json = JSON.stringify(_stickers);
         fs.writeFile('stickers.json', json, 'utf8', function(){
             reloadStickers();
             kuro.editMessage(msg.channel.id, msg.id, 'The sticker was removed o7').then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
         });
-
     }else{
         kuro.editMessage(msg.channel.id, msg.id, 'There is no sticker by that name, you wonderful person.').then(() => setTimeout( () => kuro.deleteMessage(msg.channel.id, msg.id), 3000));
     }
-
 };
 
 let reloadStickers = function(){
@@ -331,9 +372,7 @@ let downloadImage = function(name, url, dest, ext, msg) {
 };
 
 function getRegionalIndicators(text){
-
-    let message = "";
-
+    let message = '';
     for(let i = 0; i < text.length; i++)
         if(text[i] === ' ')
             message = message + text[i];
@@ -341,7 +380,7 @@ function getRegionalIndicators(text){
             message = message + ':regional_indicator_' + text[i] + ':';
 
     return message;
-};
+}
 
 function getExternalIP (callback) {
     if(_config.server.islocal === false){
@@ -358,5 +397,17 @@ function getExternalIP (callback) {
         return callback(null, '127.0.0.1');
     }
 }
+
+Array.prototype.shuffle = function() {
+    let i = this.length, j, temp;
+    if ( i == 0 ) return this;
+    while ( --i ) {
+        j = Math.floor( Math.random() * ( i + 1 ) );
+        temp = this[i];
+        this[i] = this[j];
+        this[j] = temp;
+    }
+    return this;
+};
 
 kuro.connect();

@@ -87,6 +87,13 @@ Note that every command will edit/delete the message afterwards to provide a bet
 - `/regional string`  
   Kuro will try to spell your string using regional indicators, just for the sake of being annoying.
 
+- `/reaction string`
+  Kuro will try to react to the last post with regional indicators for the sake of being super annoying.
+
+- `/reactions`
+  This is super fucking annoying, don't use please.
+  Gets a list of all the server emotes, scrambles them and picks 20 to react to the last message on the chat.
+
 ## TODO list
 
 - If the added sticker is a gifv, instead of saving it just store the link to it so discord shows the preview, since if you attach it it could go over the 8mb limit and there is no preview available.  
