@@ -6,19 +6,23 @@ An easy to use self bot with different utilities built on top of [Eris](https://
 [> Check this video to see how it works!](https://my.mixtape.moe/pwcrem.webm)
 
 ## Installing:
-0. If coming from a previous version update your `config.json` file and `npm install` before starting the bot!
+0. If coming from a previous version update your `config.json` file delete `node_modules` folder and `npm install` before starting the bot!
 1. Clone the repo with `git clone https://github.com/kanadeko/Kuro`
 2. Run `npm install`
 3. Copy config.sample.json to config.json and fill the required data.
 4. Run the bot with `node Kuro.js`
 
 ---
+## Version 0.2 is out!
+### What's new:
+1. Removed the need of sticker before executing a command, you can now just `!add somesticker [url]` and send it with `!somesticker`
+2. Fixed the list command, that would crash the bot after the specified timeout
+3. `!playing [string]` now gets saved to config, and applied automatically at launch.
+4. `!status idle|online|dnd|invisible` gets saved to config as well, no more being online when you shouldn't :eyes:
+5. Improved how images are downloaded when adding a new sticker
+6. Removed duplicate code and cleaned up a lot of stuff
 
-## What's new:
-1. Awesome new way to see your sticker list!
-2. Kind of
-3. Fixed some issues, refactored some code
-
+#### If you are coming from a previous version, I suggest you delete the `node_modules` folder and then `npm install`, since the bot is now using fewer dependencies
 ---
 
 ## Overview of the config.sample.json file:
@@ -27,12 +31,16 @@ An easy to use self bot with different utilities built on top of [Eris](https://
     "token": "YOUR-ACCOUNT-TOKEN",
     "owner": "YOUR-USERNAME",
     "userID" : "YOUR-USER-ID",
+    "prefix": "!",
     "server":{
         "enabled": false,
         "islocal": false,
         "port": 8080,
         "duration": 1
-    }
+    },
+    "offlinestatus": "invisible",
+	"playingstatus": "with Kuro",
+	"stickererror": false
 }
 ```
 
@@ -60,37 +68,37 @@ If `"islocal"` is set to `true`, the bot will believe it's running on the same c
 
 Note that every command will edit/delete the message afterwards to provide a better experience while interacting with the bot.
 
-- `/sticker name`  
+- `!name`  
   Kuro will replace this message with the sticker associated to the given `name`,
 
-- `/sticker add name`  
+- `!add name`  
   By running this command while attaching an image, Kuro will try to upload it and use the `name` you specified for future use.
 
-- `/sticker add name url`  
+- `!add name url`  
   Kuro will upload the given image `url` and use the `name` you specified for future use.
 
-- `/sticker del name`  
+- `!del name`  
   Kuro will try and delete the sticker with the given `name`.
 
-- `/sticker list`  
+- `!list`  
   Kuro will print a list of all your stickers
 
-- `/status online|idle|dnd|offline`  
+- `!status online|idle|dnd|offline`  
   The status you want to appear as whenever you're offline, since using Kuro will make discord think you're always online.
 
-- `/playing string`  
+- `!playing string`  
   This will change the 'Playing' status below your username to the string entered above. Note that you won't be able to see the status but everyone else will, this is a limitation with discord itself and not the bot.
 
-- `/purge number`  
+- `!purge number`  
   Kuro will fetch your latest 100 messages on the channel that triggered this command and delete the last `number` messages.
 
-- `/regional string`  
+- `!regional string`  
   Kuro will try to spell your string using regional indicators, just for the sake of being annoying.
 
-- `/reaction string`
+- `!react string`
   Kuro will try to react to the last post with regional indicators for the sake of being super annoying.
 
-- `/reactions`
+- `!reactions`
   This is super fucking annoying, don't use please.
   Gets a list of all the server emotes, scrambles them and picks 20 to react to the last message on the chat.
 
@@ -101,7 +109,3 @@ Note that every command will edit/delete the message afterwards to provide a bet
 - Make that the `del` command also deletes the file associated with the sticker.  
 
 - Make the `/sticker list` website less cancer.  
-
-## Known Bugs
-
-- If you open an attachment from discord in a browser window and use that link as the source for `/sticker add` it fails. No idea why.
