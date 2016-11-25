@@ -1,6 +1,6 @@
 {
     "name": "Kuro",
-    "version": "0.2",
+    "version": "0.2.0",
     "description": "Self bot with utilities",
     "author": "kanadeko",
 	"main": "kuro.js",
