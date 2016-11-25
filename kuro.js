@@ -53,7 +53,7 @@ kuro.on('messageCreate', function(msg){
     if (!msg.content.startsWith(_config.prefix)) return;
 
     // Ignore if empty command
-    if (msg.content.length == _config.prefix.length) return;
+    if (msg.content.length === _config.prefix.length) return;
 
     // Get all the arguments
     let tmp = msg.content.substring(_config.prefix.length, msg.length).split(' ');
@@ -83,11 +83,11 @@ kuro.on('messageCreate', function(msg){
 kuro.return = function(type, message, msg, timeout){
     if(type === undefined) return;
 
-    if(type == 'delete')
+    if(type === 'delete')
         delMessage(msg, timeout);
-    else if(type == 'edit')
+    else if(type === 'edit')
         kuro.editMessage(msg.channel.id, msg.id, message).then(() => delMessage(msg, timeout));
-    else if(type == 'create')
+    else if(type === 'create')
         kuro.createMessage(msg.channel.id, message).then((newmsg) => delMessage(newmsg, timeout));
 };
 
@@ -178,8 +178,13 @@ commands.list = function(msg, args){
         startServer(msg);
     else{
         let list = '';
-        for(let sticker in _stickers)
-            list = list + ' ' + sticker + '\n';
+
+        for (let sticker in _stickers)
+            if ({}.hasOwnProperty.call(_stickers, sticker))
+                list = list + ' ' + sticker + '\n';
+
+        //for(let sticker in _stickers)
+            //list = list + ' ' + sticker + '\n';
 
         kuro.return('edit', '```' + list + '```', msg, 5000);
     }
@@ -191,7 +196,7 @@ commands.list = function(msg, args){
     was triggered.
 */
 commands.purge = function(msg, args){
-    let msgCount = parseInt(args);
+    let msgCount = parseInt(args, 10);
     kuro.getMessages(msg.channel.id, 100)
         .then((messages) => {
             let filtered = messages.filter(m => m.author.id === kuro.user.id);
@@ -214,12 +219,11 @@ commands.status = function(msg, args){
         return;
     }
 
-    if(args[0] != 'idle' && args[0] != 'online' && args[0] != 'dnd' && args[0] != 'invisible'){
+    if(args[0] !== 'idle' && args[0] !== 'online' && args[0] !== 'dnd' && args[0] !== 'invisible'){
         kuro.return('edit', 'Wrong option. You need to specify idle|online|dnd|invisible', msg);
         return;
     }
 
-    // TODO: Make the status persist upon bot's restart
     kuro.editStatus(args[0]);
     saveConfig('offlinestatus', args[0]);
     kuro.return('edit', 'Next time you are offline your status will be set to: ' + args[0], msg);
@@ -327,8 +331,10 @@ let startServer = function(msg){
             // This is such a bad approach. DELET DIS
             fs.writeFileSync('./public/stickers.json', fs.readFileSync('./stickers.json'));
 
+            let openMessage = 'To view your sticker list go to http://' + body + ':' + _config.server.port + ' for the next ' + _config.server.duration + ' minutes.';
+
             if(stickerServer !== undefined){
-                kuro.return('edit', 'To view your sticker list go to http://' + body + ':' + _config.server.port + ' for the next ' + _config.server.duration + ' minutes.', msg, 5000);
+                kuro.return('edit', openMessage, msg, 5000);
                 return;
             }
 
@@ -338,7 +344,7 @@ let startServer = function(msg){
             stickerServer = server.listen(_config.server.port);
 
             setTimeout( () => { stickerServer.close(); stickerServer = undefined; }, (_config.server.duration * 60 * 1000));
-            kuro.return('edit', 'To view your sticker list go to http://' + body + ':' + _config.server.port + ' for the next ' + _config.server.duration + ' minutes.', msg, 5000);
+            kuro.return('edit', openMessage, msg, 5000);
         } else {
             kuro.return('edit', 'Unfortunately we couldnt get your external IP.', msg);
         }
@@ -401,13 +407,11 @@ function getRegionalIndicators(text){
 function getExternalIP (callback) {
     if(_config.server.islocal === false){
         request('http://wtfismyip.com/text', (err, res, body) => {
+            if(err) return callback('error');
+
             body = body.toString().trim();
             if(/^(?:(?:2[0-4]\d|25[0-5]|1\d{2}|[1-9]?\d)\.){3}(?:2[0-4]\d|25[0-5]|1\d{2}|[1-9]?\d)$/.test(body))
                 return callback(null, body);
-            else{
-                //console.log(body);
-                return callback('error');
-            }
         });
     }else{
         return callback(null, '127.0.0.1');
@@ -422,7 +426,7 @@ function saveConfig(param, value){
 
 Array.prototype.shuffle = function() {
     let i = this.length, j, temp;
-    if ( i == 0 ) return this;
+    if ( i === 0 ) return this;
     while ( --i ) {
         j = Math.floor( Math.random() * ( i + 1 ) );
         temp = this[i];
