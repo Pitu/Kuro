@@ -1,5 +1,7 @@
 ![Kuro Bot](http://i.imgur.com/ohS1PwH.png)   
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/kanadeko/Kuro/master/LICENSE)
+[![Code Climate](https://codeclimate.com/github/kanadeko/Kuro/badges/gpa.svg)](https://codeclimate.com/github/kanadeko/Kuro)
+[![Issue Count](https://codeclimate.com/github/kanadeko/Kuro/badges/issue_count.svg)](https://codeclimate.com/github/kanadeko/Kuro)
 
 An easy to use self bot with different utilities built on top of [Eris](https://github.com/abalabahaha/eris/). NodeJS version 6+ is ***REQUIRED***
 
