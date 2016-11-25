@@ -83,9 +83,7 @@ kuro.on('messageCreate', function(msg){
 kuro.return = function(type, message, msg, timeout){
     if(type === undefined) return;
 
-    if(type === 'delete')
-        delMessage(msg, timeout);
-    else if(type === 'edit')
+    if(type === 'edit')
         kuro.editMessage(msg.channel.id, msg.id, message).then(() => delMessage(msg, timeout));
     else if(type === 'create')
         kuro.createMessage(msg.channel.id, message).then((newmsg) => delMessage(newmsg, timeout));
@@ -313,6 +311,22 @@ commands.reactions = function(msg, args){
     });
 };
 
+commands.eyes = function(msg, args){
+    delMessage(msg, 0);
+    kuro.createMessage(msg.channel.id, '👀').then(msg => {
+        setTimeout(() => {
+            msg.edit('<:eyesLeft:248893693153640449>').then(msg => {
+                setTimeout(() => {
+                    msg.edit('<:flippedEyes:248893701772804097>').then(msg => {
+                        setTimeout(() => {
+                            msg.edit('<:eyesFlipped:251594919364395028>');
+                        }, 500);
+                    });
+                }, 500);
+            });
+        }, 500);
+    });
+};
 
 let sendSticker = function(msg, name){
     let img = fs.readFileSync('stickers/' + _stickers[name]);
