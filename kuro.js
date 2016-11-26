@@ -315,11 +315,27 @@ commands.eyes = function(msg, args){
     delMessage(msg, 0);
     kuro.createMessage(msg.channel.id, '👀').then(msg => {
         setTimeout(() => {
-            msg.edit('<:eyesLeft:248893693153640449>').then(msg => {
+            msg.edit('<:eyesFlipped:251594919364395028>').then(msg => {
                 setTimeout(() => {
-                    msg.edit('<:flippedEyes:248893701772804097>').then(msg => {
+                    msg.edit('👀').then(msg => {
                         setTimeout(() => {
-                            msg.edit('<:eyesFlipped:251594919364395028>');
+                            msg.edit('<:eyesFlipped:251594919364395028>').then(msg => {
+                                setTimeout(() => {
+                                    msg.edit('👀').then(msg => {
+                                        setTimeout(() => {
+                                            msg.edit('<:eyesFlipped:251594919364395028>').then(msg => {
+                                                setTimeout(() => {
+                                                    msg.edit('👀').then(msg => {
+                                                        setTimeout(() => {
+                                                            msg.edit('<:eyesFlipped:251594919364395028>');
+                                                        }, 500);
+                                                    });
+                                                }, 500);
+                                            });
+                                        }, 500);
+                                    });
+                                }, 500);
+                            });
                         }, 500);
                     });
                 }, 500);
