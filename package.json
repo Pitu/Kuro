@@ -18,6 +18,7 @@
     "dependencies": {
         "eris": "github:abalabahaha/eris#dev",
         "express": "^4.14.0",
-        "request": "^2.74.0"
+        "request": "^2.74.0",
+        "xml2js": "^0.4.17"
     }
 }

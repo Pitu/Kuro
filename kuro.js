@@ -3,6 +3,7 @@ let Eris        = require('eris');
 let fs          = require('fs');
 let express     = require('express');
 let request     = require('request');
+let parseString = require('xml2js').parseString;
 
 // Config
 let _config     = require('./config.json');
@@ -343,6 +344,53 @@ commands.eyes = function(msg, args){
         }, 500);
     });
 };
+
+commands.mal = function(msg, args){
+    
+    kuro.editMessage(msg.channel.id, msg.id, 'Loading...');
+
+    let username = _config.MALusername;
+    if(args.length !== 0) username = args[0]
+
+    request(`https://myanimelist.net/malappinfo.php?&status=all&type=anime&u=${username}`, (err, res, body) => {
+        if(!err){
+            parseString(body, function (err, result) {
+
+                if(!err){
+                    
+                    try{
+
+                        let id = result.myanimelist.myinfo[0].user_id[0];
+                        let img = `https://myanimelist.cdn-dena.com/images/userimages/${id}.jpg`
+
+                        kuro.editMessage(msg.channel.id, msg.id, {
+                            "embed": {
+                                "type": "rich",
+                                "title": username + '\'s MyAnimeList Summary',
+                                "url": 'https://myanimelist.net/animelist/' + username,
+                                "description": "This user has spent " + result.myanimelist.myinfo[0].user_days_spent_watching[0] + " days watching anime, SUGOI!",
+                                "color": 3035554,
+                                "fields": [
+                                    { "name": 'Watching', "value": result.myanimelist.myinfo[0].user_watching[0], "inline": true },
+                                    { "name": 'Completed', "value": result.myanimelist.myinfo[0].user_completed[0], "inline": true },
+                                    { "name": 'On Hold', "value": result.myanimelist.myinfo[0].user_onhold[0], "inline": true },
+                                    { "name": 'Dropped', "value": result.myanimelist.myinfo[0].user_dropped[0], "inline": true },
+                                    { "name": 'Plan to Watch', "value": result.myanimelist.myinfo[0].user_plantowatch[0], "inline": true }
+                                ],
+                                "thumbnail": {
+                                    "url": img
+                                }
+                            }
+                        });
+
+                    }catch(e){
+                        delMessage(msg, 0);
+                    }
+                }
+            });
+        }
+    });
+}
 
 let sendSticker = function(msg, name){
     let img = fs.readFileSync('stickers/' + _stickers[name]);
