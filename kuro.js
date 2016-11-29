@@ -4,6 +4,7 @@ let fs          = require('fs');
 let express     = require('express');
 let request     = require('request');
 let parseString = require('xml2js').parseString;
+let translate   = require('google-translate-api');
 
 // Config
 let _config     = require('./config.json');
@@ -390,6 +391,22 @@ commands.mal = function(msg, args){
             });
         }
     });
+}
+
+commands.tl = function(msg, args){
+
+    kuro.getMessages(msg.channel.id, 2)
+        .then((messages) => {
+
+            translate(messages[1].content, {to: 'en'}).then(res => {
+                kuro.editMessage(msg.channel.id, msg.id, `Translated from \`${res.from.language.iso}\` | ${res.text}`);
+            }).catch(err => {
+                console.log(err)
+                delMessage(msg, 0);
+            });
+
+        });
+
 }
 
 let sendSticker = function(msg, name){
