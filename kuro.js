@@ -45,7 +45,7 @@ kuro.on('messageCreate', function(msg){
 	// Ignore if empty command
 	if (msg.content.length === config.prefix.length) return
 
-	utils.log(`Message > ${msg.content}`)
+	// utils.log(`Message > ${msg.content}`)
 
 	// Get all the arguments
 	let tmp = msg.content.substring(config.prefix.length, msg.length).split(' ')

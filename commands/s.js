@@ -31,7 +31,6 @@ exports.run = function(bot, msg, args, utils) {
 }
 
 exports.sendSticker = function(name){
-	console.log(name)
 	let img = require('fs').readFileSync('./stickers/' + this.stickers[name])
 	this.bot.createMessage(this.msg.channel.id, '', {file: img, name: this.stickers[name]})
 	this.msg.delete()
