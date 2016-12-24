@@ -3,14 +3,14 @@
     "owner": "YOUR-USERNAME",
     "userID" : "YOUR-USER-ID",
     "prefix": "!",
+    "offlinestatus": "",
+	"playingstatus": "",
+	"stickererror": false,
+	"MALusername": "YOUR-MYANIMELIST-USERNAME",
     "server":{
         "enabled": false,
         "islocal": false,
         "port": 8080,
         "duration": 5
     },
-    "offlinestatus": "",
-	"playingstatus": "",
-	"stickererror": false,
-	"MALusername": "YOUR-MYANIMELIST-USERNAME"
 }

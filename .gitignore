@@ -4,4 +4,4 @@ stickers/*
 config.json
 stickers.json
 .DS_Store
-public/stickers.json
+.eslintrc.json
