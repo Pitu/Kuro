@@ -38,7 +38,7 @@ exports.sendSticker = function(name){
 
 exports.add = function(args){
 	if(args[0] === undefined){
-		this.utils.edit(this.msg, 'You forgot the sticker name, dumdum')
+		this.utils.edit(this.msg, 'No name provided.')
 		return
 	}
 
@@ -46,7 +46,7 @@ exports.add = function(args){
 
 	// Is the name of the sticker already used?
 	if(this.stickers.hasOwnProperty(name)){
-		this.utils.edit(this.msg, 'You already used that name.')
+		this.utils.edit(this.msg, 'Name already in use.')
 		return
 	}
 
@@ -89,13 +89,13 @@ exports.add = function(args){
 }
 
 exports.del = function(args){
-	if(args[0] === undefined) return this.utils.edit(this.msg, 'You forgot the sticker name.')
+	if(args[0] === undefined) return this.utils.edit(this.msg, 'No name provided.')
 	
 	if(args[0] in this.stickers){
 		delete(this.stickers[args[0]])
 		let json = JSON.stringify(this.stickers, null, '\t')
 		require('fs').writeFile('./stickers.json', json, 'utf8', () => {
-			return this.utils.edit(this.msg, 'The sticker was removed.')
+			return this.utils.edit(this.msg, 'The sticker was removed.', 1000)
 		})
 	}else{
 		return this.utils.edit(this.msg, 'There is no sticker by that name.')
@@ -111,7 +111,7 @@ exports.ren = function(args){
 		delete(this.stickers[args[0]])
 		let json = JSON.stringify(this.stickers, null, '\t')
 		require('fs').writeFile('./stickers.json', json, 'utf8', () => {
-			return this.utils.edit(this.msg, 'Sticker renamed.')
+			return this.utils.edit(this.msg, 'Sticker renamed.', 1000)
 		})
 	}else{
 		return this.utils.edit(this.msg, 'There is no sticker by that name.')
@@ -127,7 +127,7 @@ exports.list = function(){
 			if ({}.hasOwnProperty.call(this.stickers, sticker))
 				list = list + ' ' + sticker + '\n'
 
-		return this.utils.edit(this.msg, '```' + list + '```', 0)
+		return this.utils.edit(this.msg, '```json\n' + list + '```', 0)
 	}
 }
 
@@ -144,7 +144,7 @@ exports.downloadImage = function(name, url, dest, ext) {
 		this.stickers[name] = name + '.' + ext
 		let json = JSON.stringify(this.stickers, null, '\t')
 		require('fs').writeFile('./stickers.json', json, 'utf8', () => {
-			this.utils.edit(this.msg, 'Sticker added succesfully fam \o/')
+			this.utils.edit(this.msg, 'Sticker added', 1000)
 		})
 
 	})
