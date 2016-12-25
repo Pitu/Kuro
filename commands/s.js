@@ -26,8 +26,12 @@ exports.run = function(bot, msg, args, utils) {
 	if(args[0] === 'ren') return this.ren(newargs)
 	if(args[0] === 'list') return this.list()
 	
-	if(this.stickers.hasOwnProperty(args[0])) return this.sendSticker(args[0])
-	msg.delete()
+	if(this.stickers.hasOwnProperty(args[0])){
+		this.sendSticker(args[0])
+	}else{
+		msg.delete()	
+	}
+	
 }
 
 exports.sendSticker = function(name){
