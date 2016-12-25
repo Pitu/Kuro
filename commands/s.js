@@ -10,8 +10,6 @@ exports.run = function(bot, msg, args, utils) {
 		if (!exists) require('fs').writeFile('./stickers.json', '{}')
 	})
 
-	//.writeFile('./stickers.json', '{}', { flag: 'wx' })
-	
 	this.stickers = require('../stickers.json')
 	this.utils = utils
 	this.msg = msg
@@ -26,11 +24,8 @@ exports.run = function(bot, msg, args, utils) {
 	if(args[0] === 'ren') return this.ren(newargs)
 	if(args[0] === 'list') return this.list()
 	
-	if(this.stickers.hasOwnProperty(args[0])){
-		this.sendSticker(args[0])
-	}else{
-		msg.delete()	
-	}
+	if(this.stickers.hasOwnProperty(args[0])) return this.sendSticker(args[0])
+	this.msg.delete()
 	
 }
 
