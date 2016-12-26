@@ -2,13 +2,18 @@ exports.bot
 exports.msg
 exports.utils
 exports.stickers
+exports.fs
 
 exports.run = function(bot, msg, args, utils) {
 	
+	this.fs = require('fs')
 	// Create stickers.json if it doesn't exist
-	require('fs').exists('./stickers.json', function(exists) { 
-		if (!exists) require('fs').writeFile('./stickers.json', '{}')
+	this.fs.exists('./stickers.json', function(exists) { 
+		if (!exists) this.fs.writeFile('./stickers.json', '{}')
 	})
+
+	// Create sticker folder if it doesn't exist
+	this.fs.existsSync(__dirname + '/stickers') || this.fs.mkdirSync(__dirname + '/stickers')
 
 	this.stickers = require('../stickers.json')
 	this.utils = utils
@@ -30,7 +35,7 @@ exports.run = function(bot, msg, args, utils) {
 }
 
 exports.sendSticker = function(name){
-	let img = require('fs').readFileSync('./stickers/' + this.stickers[name])
+	let img = this.fs.readFileSync('./stickers/' + this.stickers[name])
 	this.bot.createMessage(this.msg.channel.id, '', {file: img, name: this.stickers[name]})
 	this.msg.delete()
 }
@@ -93,7 +98,7 @@ exports.del = function(args){
 	if(args[0] in this.stickers){
 		delete(this.stickers[args[0]])
 		let json = JSON.stringify(this.stickers, null, '\t')
-		require('fs').writeFile('./stickers.json', json, 'utf8', () => {
+		this.fs.writeFile('./stickers.json', json, 'utf8', () => {
 			return this.utils.edit(this.msg, 'The sticker was removed.', 1000)
 		})
 	}else{
@@ -109,7 +114,7 @@ exports.ren = function(args){
 		this.stickers[args[1]] = this.stickers[args[0]]
 		delete(this.stickers[args[0]])
 		let json = JSON.stringify(this.stickers, null, '\t')
-		require('fs').writeFile('./stickers.json', json, 'utf8', () => {
+		this.fs.writeFile('./stickers.json', json, 'utf8', () => {
 			return this.utils.edit(this.msg, 'Sticker renamed.', 1000)
 		})
 	}else{
@@ -137,12 +142,12 @@ exports.downloadImage = function(name, url, dest, ext) {
 			console.log(err)
 			this.msg.edit(this.msg, '***Error:*** ' + err)
 		})
-		.pipe(require('fs').createWriteStream(dest))
+		.pipe(this.fs.createWriteStream(dest))
 
 	saveFile.on('finish', () => { 
 		this.stickers[name] = name + '.' + ext
 		let json = JSON.stringify(this.stickers, null, '\t')
-		require('fs').writeFile('./stickers.json', json, 'utf8', () => {
+		this.fs.writeFile('./stickers.json', json, 'utf8', () => {
 			this.utils.edit(this.msg, 'Sticker added', 1000)
 		})
 

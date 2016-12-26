@@ -4,4 +4,3 @@ stickers/*
 config.json
 stickers.json
 .DS_Store
-.eslintrc.json
