@@ -8,7 +8,7 @@ exports.run = function(bot, msg, args, utils) {
 	
 	this.fs = require('fs')
 	// Create stickers.json if it doesn't exist
-	this.fs.exists('./stickers.json', function(exists) { 
+	this.fs.exists('./stickers.json', (exists) => { 
 		if (!exists) this.fs.writeFile('./stickers.json', '{}')
 	})
 
