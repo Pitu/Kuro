@@ -27,7 +27,7 @@ exports.run = function(msg, args) {
 				{ 'name': 'Tags', 'value': tags, 'inline': true }
 			],
 			'thumbnail': {
-				'url': 'https://i.imgur.com/wppccb2.png'
+				'url': 'https://i.imgur.com/sVVcwJd.png'
 			},
 			'author':{
 				'name': 'kanadeko',
