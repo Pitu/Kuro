@@ -1,4 +1,4 @@
-let config = {
+module.exports = {
 
 	// This is your Discord personal token
 	token: '',
@@ -41,5 +41,3 @@ let config = {
 	}
 	
 }
-
-module.exports = config
