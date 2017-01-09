@@ -4,6 +4,9 @@ const knex = require('knex')(config.database)
 const chalk = require('chalk')
 const fs = require('fs')
 
+let filesDirectory = __dirname + '/files'
+fs.existsSync(filesDirectory) || fs.mkdirSync(filesDirectory)
+
 // Initializing the ultimate tan
 const kuro = new Discord.Client()
 

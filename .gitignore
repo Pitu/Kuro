@@ -2,7 +2,6 @@
 node_modules/
 files/
 stickers/
-!files/.gitkeep
 .eslintrc.json
 config.js
 db
