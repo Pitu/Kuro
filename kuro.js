@@ -1,51 +1,40 @@
-let config     = require('./config.json')
-let Eris        = require('eris')
-let utils       = require('./utils/utils')
+const config = require('./config.js')
+const Discord = require('discord.js')
+const knex = require('knex')(config.database)
+const chalk = require('chalk')
+const fs = require('fs')
 
-utils.log('Starting...')
-utils.init(config)
-
-// Declaring Kuro
-let kuro = new Eris.CommandClient(config.token, { userAccount: true }, {
-	description: 'Best selfbot',
-	owner: config.owner,
-	prefix: '',
-	ignoreSelf: false,
-	defaultHelpCommand: false,
-	defaultCommandOptions: {
-		requirements: {
-			'userIDs': [config.userID]
-		}
-	}
-})
+// Initializing the ultimate tan
+const kuro = new Discord.Client()
 
 // When ready
 kuro.on('ready', () => {
-	if(config.offlinestatus !== ''){
-		utils.log('Setting offline status to: ' + config.offlinestatus)
-		kuro.editStatus(config.offlinestatus)
-	}
 
-	if(config.playingstatus !== ''){
-		utils.log('Setting game status to: ' + config.playingstatus)
-		kuro.editStatus({name: config.playingstatus})
-	}
+	// Create database if it doesn't exist
+	fs.exists('db', (exists) => exists || fs.writeFile('db', ''))
 
-	utils.log('Kuro is ready!')
+	// Getting the database ready
+	kuro.db = knex
+
+	// Making config available on every module
+	kuro.config = config
+
+	//kuro.loadCommands()
+	kuro.modules = kuro.loadCommands()
+
+	kuro.log('Kuro is ready!', 'green')
 })
 
-kuro.on('messageCreate', function(msg){
+kuro.on('message', function(msg){
 
 	// Ignore if the message is not ours
-	if (msg.author.id !== config.userID) return
+	if (msg.author.id !== kuro.user.id) return
 
 	// Ignore if the message doesn't start with our prefix
 	if (!msg.content.startsWith(config.prefix)) return
 
 	// Ignore if empty command
 	if (msg.content.length === config.prefix.length) return
-
-	// utils.log(`Message > ${msg.content}`)
 
 	// Get all the arguments
 	let tmp = msg.content.substring(config.prefix.length, msg.length).split(' ')
@@ -57,16 +46,48 @@ kuro.on('messageCreate', function(msg){
 	// Store the command separately
 	let cmd = tmp[0]
 
-	try {
+	if(kuro.modules.hasOwnProperty(cmd)) return kuro.modules[cmd].run(msg, args)
+	if(config.commandError.sendToModule === true)
+		return kuro.modules[config.commandError.module][config.commandError.function](msg, cmd)
 
-		delete require.cache[require.resolve('./commands/' + cmd)]
-		let cmdFile = require('./commands/' + cmd)
-		cmdFile.run(kuro, msg, args, utils)
-
-	} catch(e) {
-		msg.edit(msg.author + `Error while executing command\n${e}`).then(setTimeout(msg.delete.bind(msg), 5000))
-	}
+	return msg.delete()
 
 })
 
-kuro.connect()
+kuro.loadCommands = function(){
+	
+	let commands = {}
+
+	// Load up all the modules
+	fs.readdirSync('./commands/').forEach(function(file) {
+		let name = file.slice(0, -3)
+		commands[name] = require('./commands/' + file)
+		if(commands[name].hasOwnProperty('init'))
+			commands[name].init(kuro)
+
+		kuro.log(`Module ${name} is ready`)
+	})
+
+	return commands
+
+}
+
+kuro.edit = function(msg, content, timeout = 3000){
+	if(timeout === 0) return msg.edit(content).catch(console.error)
+
+	msg.edit(content).then(() => {
+		setTimeout(() => msg.delete().catch(console.error), timeout)
+	})
+}
+
+kuro.log = function(msg, color){
+	if(color === undefined) console.log('[Kuro]: ' + msg)
+	else console.log(chalk[color]('[Kuro]: ' + msg))
+}
+
+kuro.error = function(msg){
+	console.log(chalk.red('[Kuro]: ' + msg))
+}
+
+kuro.log('Starting...', 'green')
+kuro.login(config.token)

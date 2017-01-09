@@ -3,116 +3,140 @@
 [![Code Climate](https://codeclimate.com/github/kanadeko/Kuro/badges/gpa.svg)](https://codeclimate.com/github/kanadeko/Kuro)
 [![Issue Count](https://codeclimate.com/github/kanadeko/Kuro/badges/issue_count.svg)](https://codeclimate.com/github/kanadeko/Kuro)
 
-An easy to use self bot with different utilities built on top of [Eris](https://github.com/abalabahaha/eris/). NodeJS version 6+ is ***REQUIRED***
+Kuro is an easy to use self bot that is shifting more and more into a framework while preserving its ease of use. It sits on top of [discord.js](https://github.com/hydrabolt/discord.js/). NodeJS version 6+ is ***REQUIRED***
 
 [> Check this video to see how it works!](https://my.mixtape.moe/pwcrem.webm)
 
+## Version 4.0 is out!
+### What's new:
+1. Rewrote pretty much everything since Kuro is shifting into a framework.
+2. Each command has it's own file now, meaning you can add commands to your bot by simply dropping a .js file into the ./commands/ folder.
+3. Removed json files for configuration and value storing. Everything is handled by [knex](https://knexjs.org) and sqlite now.
+4. Added a new configuration setting to redirect unknown commands to a specific module. Check `config.js` for further instructions and sample.
+
 ## Installing:
-0. If coming from a previous version update your `config.json` file delete `node_modules` folder and `npm install` before starting the bot!
+
+---
+#### Upgrading:
+
+1. **This is super important:** This update breaks a few things, including the loss of all your stickers. As a super experimental stuff, you *__could__* try to run `!s migrate` and if you're lucky enough, it will migrate your stickers to the new system.  
+2. Update your `config.js` file with the new added values. Check them out on the `config.sample.js` file. (**Note the change from `config.json` to `config.js`**)
+3. Delete `node_modules/` folder
+4. `npm install`
+
+#### Clean install:
 1. Clone the repo with `git clone https://github.com/kanadeko/Kuro`
 2. Run `npm install`
 3. Copy config.sample.json to config.json and fill the required data.
-4. Run the bot with `node Kuro.js`
+4. To get your personal token, bring up the Developer Tools on the discord website and type `localStorage.token`. That should print your personal token to use with this bot.
+5. Run the bot with `node kuro.js`
 
----
-## Version 3.0 is out!
-### What's new:
-1. Rewrote everything.
-2. Commands are separated into files, making it super easy to extend the bot.
-3. Removed the webserver to see stickers, for now.
-4. Added a rename command for stickers! `!s ren oldname newname`  
-4. Stickers now have a prefix of `!s`. So use it like `!s add`, `!s list`, `!s _sticker_`
-5. `!playing [string]` now gets saved to config, and applied automatically at launch.
-6. `!status idle|online|dnd|invisible` gets saved to config as well, no more being online when you shouldn't :eyes:
-7. Improved how images are downloaded when adding a new sticker
-
-#### If you are coming from a previous version, I suggest you delete the `node_modules` folder and then `npm install`, since the bot is now using fewer dependencies
 ---
 
 ## Overview of the config.sample.json file:
-```json
-{
-    "token": "YOUR-ACCOUNT-TOKEN",
-    "owner": "YOUR-USERNAME",
-    "userID" : "YOUR-USER-ID",
-    "prefix": "!",
-    "server":{
-        "enabled": false,
-        "islocal": false,
-        "port": 8080,
-        "duration": 1
-    },
-    "offlinestatus": "invisible",
-	"playingstatus": "with Kuro",
-	"stickererror": false
+```javascript
+let config = {
+
+  // This is your Discord personal token
+  token: '',
+
+  // Prefix on which the bot will be hooked to
+  prefix: '!',
+
+  // Your MyAnimeList username
+  MALusername: '',
+
+  // Unrecognized commands
+  commandError: {
+    // Should we attempt to redirect every unrecognized command to a module?
+    sendToModule: true,
+    // Which module?
+    module: 's',
+    // Which function?
+    function: 'run'
+    /*
+      In this case, any unrecognized command will be redirected to the
+      stickers module to see if it exists as a sticker and if it does, send it.
+    */
+  }
 }
 ```
 
 ---
 
-## Important note about the server section on the config.json:
-We're rolling out an experimental feature to enable the user to see all of their stickers in action by creating a local server and sending back the public ip to browse them.
-Due to the nature of how this works, it means that the public IP of the server you're hosting the bot in will be publicly printed in chat, so use this feature with caution.
-If this feature is enabled by setting `"enabled": true` we recommend only running `/sticker list` on a private channel and not a public one.
+## Modules:
+This new update brings every command in the form of separate modules. Inside each module you can make up the stuff you want, and you can execute it by calling the module name without the extension. There's a sample module ready for you to duplicate called `base.js`.
 
-If `"islocal"` is set to `true`, the bot will believe it's running on the same computer you're using discord so instead of printing your public ip it will print `http://127.0.0.1:PORT`
+Example of a simple module with no dependencies that returns the server's member count on which you send the command:
+```javascript
+exports.run = function(msg, args) {
+  msg.delete()
+  msg.channel.sendMessage('', {
+    'embed': {
+      'title': msg.guild.name,
+      'description': `Member Count: ${msg.guild.memberCount}`,
+      'color': 15473237
+    }
+  })
+}
+```
 
-`"duration"` sets in minutes the amount of time the url will work. With the default config, 1 minute after typing `/sticker list` the url will stop working until you issue the command again.
+Pretty easy stuff.
+If you want me to include a module you've made, send a PR with your stuff and I'll look at it.
 
 ---
 
-## Getting the data for the config.json file:
-1. To get the token, bring up the Developer Tools on the discord website and type `localStorage.token`. That should print your personal token to use with this bot
-2. The owner should be your own username, in the format `kanadeko#1234`
-3. To get your userID, enable `Developer Mode` on discord under Settings > Appearance and then right click your name on the user list and `Copy ID`
+## Bundled modules
 
----
+Each module has detailed instructions inside their own files. Take a look at them for further details on how to use.
 
-## Command list
+- `eval [expression]`  
+  A module to eval expressions. Dangerous stuff, don't use unless pretty sure of what you're doing.
 
-Note that every command will edit/delete the message afterwards to provide a better experience while interacting with the bot.
+- `eyes`  
+  A module that edits a message to add the effect of animated eyes. You probably should update the emoji name if you're not on Pilar's server.
 
-- `!s name`  
-  Kuro will replace this message with the sticker associated to the given `name`,
+- `getcommand [module]`  
+  Sends the specified module's source to the chat. Ex: `!getcommand base` would print `base.js` contents to chat.
 
-- `!s add name`  
-  By running this command while attaching an image, Kuro will try to upload it and use the `name` you specified for future use.
+- `gifspeed [url]`  
+  Removes delay between frames of the given gif url and uploads it.
 
-- `!s add name url`  
-  Kuro will upload the given image `url` and use the `name` you specified for future use.
+- `mal`  
+  Prints information about your MyAnimeList username.
 
-- `!s del name`  
-  Kuro will try and delete the sticker with the given `name`.
-  
-- `!s ren oldname newname`  
-  Kuro will rename a sticker of your choosing with a new supplied name.
+- `members`  
+  Shows the server's member count.
 
-- `!s list`  
-  Kuro will print a list of all your stickers
+- `ping`  
+  Simple tool to check delay between your bot and Discord.
 
-- `!status online|idle|dnd|offline`  
+- `playing [message]`  
+  Change your `playing` status on Discord to the specified string. (Note you wont be able to see it due to a Discord limitation).
+
+- `purge [number of messages]`  
+  Grabs the supplied amount of messages from chat and deletes those that are yours.
+
+- `r`  
+  Reboots the Kuro. (Only works if using pm2|forever).
+
+- `radio [token|search|request]`  
+  Module in development to interact with [LISTEN.moe](https://listen.moe) api.
+
+- `react [message]`  
+  React to the last message with regional characters. a-z 0-9, no spaces.
+
+- `regional [message]`  
+  Sends a message using regional character emojis.
+
+- `s [name] | [add|del|ren]`  
+  A module to manage stickers like Telegram does. Upload a sticker with a given name, and then make kuro paste it when you trigger the command.
+
+- `status [online|idle|dnd|offline]`  
   The status you want to appear as whenever you're offline, since using Kuro will make discord think you're always online.
 
-- `!playing string`  
-  This will change the 'Playing' status below your username to the string entered above. Note that you won't be able to see the status but everyone else will, this is a limitation with discord itself and not the bot.
+- `tag [name] | [add|del|ren]`  
+  Saves the given text into a tag for later usage. For example `tag add kuro https://github.com/kanadeko/Kuro` would print `https://github.com/kanadeko/Kuro` every time I do `tag kuro`
 
-- `!purge number`  
-  Kuro will fetch your latest 100 messages on the channel that triggered this command and delete the last `number` messages.
-
-- `!regional string`  
-  Kuro will try to spell your string using regional indicators, just for the sake of being annoying.
-
-- `!react string`
-  Kuro will try to react to the last post with regional indicators for the sake of being super annoying.
-
-- `!reactions`
-  This is super fucking annoying, don't use please.
-  Gets a list of all the server emotes, scrambles them and picks 20 to react to the last message on the chat.
-
-## TODO list
-
-- If the added sticker is a gifv, instead of saving it just store the link to it so discord shows the preview, since if you attach it it could go over the 8mb limit and there is no preview available.  
-
-- Make that the `del` command also deletes the file associated with the sticker.  
-
-- Make the `/sticker list` website less cancer.  
+- `tl`  
+  Tries to translate the last message to english. 

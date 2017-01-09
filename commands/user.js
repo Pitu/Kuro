@@ -2,5 +2,8 @@ let kuro
 exports.init = function(bot){ kuro = bot }
 
 exports.run = function(msg, args) {
-	// Code goes here
+
+	if(!args[0]) return kuro.edit()
+	let user = args[0]
+
 }

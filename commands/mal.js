@@ -1,12 +1,15 @@
-exports.run = function(bot, msg, args, utils) {
+let kuro
+exports.init = function(bot){ kuro = bot }
+
+exports.run = function(msg, args) {
 	
-	bot.editMessage(msg.channel.id, msg.id, 'Loading...')
+	msg.edit('Loading...')
 
 	const request = require('request')
 	const parseString = require('xml2js').parseString
 	const cheerio = require('cheerio')
 
-	let username = utils.conf().MALusername
+	let username = kuro.config.MALusername
 	if(args.length !== 0) username = args[0]
 
 	request(`https://myanimelist.net/malappinfo.php?&status=all&type=anime&u=${username}`, (err, res, body) => {
@@ -38,7 +41,7 @@ exports.run = function(bot, msg, args, utils) {
 
 								description = description + '\nThis user has spent ' + result.myanimelist.myinfo[0].user_days_spent_watching[0] + ' days watching anime, SUGOI!'
 
-								bot.editMessage(msg.channel.id, msg.id, {
+								msg.edit('', {
 									'embed': {
 										'type': 'rich',
 										'title': username + '\'s MyAnimeList Summary',
@@ -59,6 +62,7 @@ exports.run = function(bot, msg, args, utils) {
 								})
 
 							}catch(e){
+								kuro.error(e)
 								msg.delete()
 							}
 						}

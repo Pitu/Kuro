@@ -1,4 +1,4 @@
-exports.run = function(bot, msg, args, utils) {
+exports.run = function(msg, args) {
 	if(args.length === 0) return msg.delete()
 
 	let text = args.join(' ').toLowerCase().split('')

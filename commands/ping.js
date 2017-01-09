@@ -1,6 +1,6 @@
-exports.run = function(bot, msg, args, utils) {
+exports.run = function(msg, args) {
 	msg.delete()
-	msg.channel.createMessage('Ping?')
+	msg.channel.sendMessage('Ping?')
 	.then(message => {
 		message.edit(`Pong! (took: ${message.timestamp - msg.timestamp}ms)`)
 	})

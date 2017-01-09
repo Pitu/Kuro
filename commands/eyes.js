@@ -1,6 +1,6 @@
-exports.run = function(bot, msg, args, utils) {
+exports.run = function(msg, args) {
 	msg.delete()
-	bot.createMessage(msg.channel.id, '👀').then(msg => {
+	msg.channel.sendMessage('👀').then(msg => {
 		setTimeout(() => {
 			msg.edit('<:eyesFlipped:251594919364395028>').then(msg => {
 				setTimeout(() => {

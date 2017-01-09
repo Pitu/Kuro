@@ -1,4 +1,7 @@
-exports.run = function(bot, msg, args, utils) {
+let kuro
+exports.init = function(bot){ kuro = bot }
+
+exports.run = function(msg, args) {
 
 	var code = args.join(' ')
 
@@ -6,13 +9,10 @@ exports.run = function(bot, msg, args, utils) {
 		var evaled = eval(code)
 		if (typeof evaled !== 'string')
 			evaled = require('util').inspect(evaled)
-		bot.createMessage(msg.channel.id, '```xl\n' + 
-			clean(evaled) +
-			'\n```')
+		msg.channel.sendCode('xl', clean(evaled))
 	}catch(err) {
-		bot.createMessage(msg.channel.id, '`ERROR` ```xl\n' +
-		clean(err) +
-		'\n```')
+		msg.channel.sendMessage('`ERROR` ```xl\n' + clean(err) + '\n```')
+		kuro.error(clean(err))
 	}
 
 }
