@@ -1,6 +1,7 @@
 let kuro
 let _msg
 let _table = 'radio'
+let _token
 
 exports.init = function(bot){ 
 	kuro = bot
@@ -11,12 +12,17 @@ exports.init = function(bot){
 		table.string('token')
 	}).then(function () {
 		bot.db.table(_table).then(function(row){
-			if(row.length > 0) return
+			if(row.length > 0){
+				_token = row[0].token
+				return
+			}
 
 			// Populate it
 			bot.db.table(_table).insert({
 				token: ''
-			}).then(function() {})
+			}).then(function(){
+
+			})
 		})
 	}).catch(function(error) { kuro.error(error) })
 
@@ -40,6 +46,7 @@ exports.token = function(args) {
 	kuro.db.table(_table).where('id', 1).update({
 		token: args[0]
 	}).then(function(){
+		_token = args[0]
 		return kuro.edit(_msg, 'Token saved.')
 	}).catch(function(error) { kuro.error(error) })
 }
@@ -55,7 +62,7 @@ exports.search = function(args) {
 			data: {
 				query: args[0]
 			},
-			headers: {'authorization': kuro.utils.conf().radiotoken}
+			headers: {'authorization': kuro.config.radiotoken}
 		}).then((response) => {
 			if(response.data === undefined) return kuro.edit(_msg, '**Error:**')
 			if(response.data.success === false) return kuro.edit(_msg, '**Error:**\n' + response.data.message)
