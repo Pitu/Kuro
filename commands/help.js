@@ -5,10 +5,11 @@ exports.run = function(msg, args) {
 	
 	let pjson = require('../package.json')
 	
-	let version = pjson.version.toString()
+	let version = 'v' + pjson.version.toString()
 	let uptime = secondsToString(process.uptime()).toString()
 	let modules = Object.keys(kuro.modules).length.toString() //0 // kuro.utils.moduleCount.toString()
-	
+	let memory = `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`
+
 	// Showing the amount of stickers to demonstrate accessing other module's information
 	let stickers = kuro.modules.s.stickerCount().toString()
 	let tags = kuro.modules.tags.tagsCount().toString()
@@ -16,23 +17,17 @@ exports.run = function(msg, args) {
 	msg.edit('', {
 		'embed': {
 			'type': 'rich',
-			'title': 'Kuro Bot',
-			'url': 'https://github.com/kanadeko/Kuro',
-			'description': 'Kuro is an easy to use, modular and super easy to extend self-bot for people to tinker with.\nIt\'s main purpose is to provide an interface to manage Telegram-like stickers and tags. ',
-			'color': 15473237,
+			'description': '[Kurobot Stats](https://github.com/kanadeko/Kuro)',
+			'color': kuro.config.embedColor,
 			'fields': [
-				{ 'name': 'Version', 'value': version, 'inline': true },
-				{ 'name': 'Modules', 'value': modules, 'inline': true },
-				{ 'name': 'Stickers', 'value': stickers, 'inline': true },
-				{ 'name': 'Tags', 'value': tags, 'inline': true }
+				{ 'name': '❯ Version', 'value': version, 'inline': true },
+				{ 'name': '❯ Ram usage', 'value': memory, 'inline': true },
+				{ 'name': '❯ Modules', 'value': modules, 'inline': true },
+				{ 'name': '❯ Stickers', 'value': stickers, 'inline': true },
+				{ 'name': '❯ Tags', 'value': tags, 'inline': true }
 			],
 			'thumbnail': {
 				'url': 'https://i.imgur.com/sVVcwJd.png'
-			},
-			'author':{
-				'name': 'kanadeko',
-				'url': 'https://github.com/kanadeko',
-				'icon_url': 'https://avatars2.githubusercontent.com/u/22165145?v=3&s=40'
 			},
 			'footer':{
 				'text': 'Uptime: ' + uptime

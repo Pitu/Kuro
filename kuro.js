@@ -11,7 +11,7 @@ fs.existsSync(filesDirectory) || fs.mkdirSync(filesDirectory)
 const kuro = new Discord.Client()
 
 // When ready
-kuro.on('ready', () => {
+kuro.once('ready', () => {
 
 	// Create database if it doesn't exist
 	fs.exists('db', (exists) => exists || fs.writeFile('db', ''))
@@ -22,8 +22,7 @@ kuro.on('ready', () => {
 	// Making config available on every module
 	kuro.config = config
 
-	//kuro.loadCommands()
-	kuro.modules = kuro.loadCommands()
+	kuro.loadCommands()
 
 	kuro.log('Kuro is ready!', 'green')
 })
@@ -59,19 +58,19 @@ kuro.on('message', function(msg){
 
 kuro.loadCommands = function(){
 	
-	let commands = {}
+	kuro.modules = {}
 
 	// Load up all the modules
 	fs.readdirSync('./commands/').forEach(function(file) {
 		let name = file.slice(0, -3)
-		commands[name] = require('./commands/' + file)
-		if(commands[name].hasOwnProperty('init'))
-			commands[name].init(kuro)
+
+		delete require.cache[require.resolve('./commands/' + file)]
+		kuro.modules[name] = require('./commands/' + file)
+		if(kuro.modules[name].hasOwnProperty('init'))
+			kuro.modules[name].init(kuro)
 
 		kuro.log(`Module ${name} is ready`)
 	})
-
-	return commands
 
 }
 
