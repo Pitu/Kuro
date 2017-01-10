@@ -70,7 +70,7 @@ exports.search = function(args) {
 			let message = ''
 			let count = 0
 			for(let song of response.data.songs){
-				if(count < 10){
+				if(count < 20){
 					count++
 
 					if(song.id.toString().length < 4){
