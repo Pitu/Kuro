@@ -57,7 +57,7 @@ exports.add = function(args){
 	}
 
 	let name = args[0]
-	let content = args[1]
+	let content = args.slice(1).join(' ')
 
 	// Is the name of the sticker already used?
 	if(_tags.hasOwnProperty(name)){
