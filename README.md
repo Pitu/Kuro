@@ -93,6 +93,9 @@ Each module has detailed instructions inside their own files. Take a look at the
 - `eval [expression]`  
   A module to eval expressions. Dangerous stuff, don't use unless pretty sure of what you're doing.
 
+- `emote [emote]`  
+  Shows information about a custom emote.
+
 - `eyes`  
   A module that edits a message to add the effect of animated eyes. You probably should update the emoji name if you're not on Pilar's server.
 
@@ -101,6 +104,9 @@ Each module has detailed instructions inside their own files. Take a look at the
 
 - `gifspeed [url]`  
   Removes delay between frames of the given gif url and uploads it.
+
+- `help`  
+  Displays an embed with statistics.
 
 - `mal`  
   Prints information about your MyAnimeList username.
@@ -117,8 +123,11 @@ Each module has detailed instructions inside their own files. Take a look at the
 - `purge [number of messages]`  
   Grabs the supplied amount of messages from chat and deletes those that are yours.
 
-- `r`  
+- `reboot`  
   Reboots the Kuro. (Only works if using pm2|forever).
+
+- `reload`  
+  Reloads all the modules (Useful when developing).
 
 - `radio [token|search|request]`  
   Module in development to interact with [LISTEN.moe](https://listen.moe) api.
@@ -135,8 +144,11 @@ Each module has detailed instructions inside their own files. Take a look at the
 - `status [online|idle|dnd|offline]`  
   The status you want to appear as whenever you're offline, since using Kuro will make discord think you're always online.
 
-- `tag [name] | [add|del|ren]`  
+- `tags [name] | [add|del|ren]`  
   Saves the given text into a tag for later usage. For example `tag add kuro https://github.com/kanadeko/Kuro` would print `https://github.com/kanadeko/Kuro` every time I do `tag kuro`
 
 - `tl`  
   Tries to translate the last message to english. 
+
+- `uptime`  
+  Displays how long the bot has been running.
