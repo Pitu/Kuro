@@ -90,12 +90,12 @@ If you want me to include a module you've made, send a PR with your stuff and I'
 
 Each module has detailed instructions inside their own files. Take a look at them for further details on how to use.
 
-- `eval [expression]`  
-  A module to eval expressions. Dangerous stuff, don't use unless pretty sure of what you're doing.
-
 - `emote [emote]`  
   Shows information about a custom emote.
 
+- `eval [expression]`  
+  A module to eval expressions. Dangerous stuff, don't use unless pretty sure of what you're doing.
+  
 - `eyes`  
   A module that edits a message to add the effect of animated eyes. You probably should update the emoji name if you're not on Pilar's server.
 
