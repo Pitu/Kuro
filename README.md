@@ -58,7 +58,10 @@ let config = {
       In this case, any unrecognized command will be redirected to the
       stickers module to see if it exists as a sticker and if it does, send it.
     */
-  }
+  },
+
+  // Border color for embeds, defaults to Kuro one
+  embedColor: 15473237
 }
 ```
 
