@@ -62,7 +62,7 @@ exports.search = function(args) {
 			data: {
 				query: args[0]
 			},
-			headers: {'authorization': kuro.config.radiotoken}
+			headers: {'authorization': _token}
 		}).then((response) => {
 			if(response.data === undefined) return kuro.edit(_msg, '**Error:**')
 			if(response.data.success === false) return kuro.edit(_msg, '**Error:**\n' + response.data.message)
@@ -101,7 +101,7 @@ exports.request = function(args) {
 		method: 'post',
 		url: 'https://listen.moe/api/songs/request',
 		data: { song: args[0] },
-		headers: {'authorization': kuro.config.radiotoken}
+		headers: {'authorization': _token}
 	}).then((response) => {
 		if(response.data === undefined) return kuro.edit(_msg, '**Error:**')
 		if(response.data.success === false) return kuro.edit(_msg, '**Error:**\n' + response.data.message)
