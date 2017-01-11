@@ -12,7 +12,7 @@ exports.run = function(msg, args) {
 
 	// Showing the amount of stickers to demonstrate accessing other module's information
 	let stickers = kuro.modules.s.stickerCount().toString()
-	let tags = kuro.modules.tags.tagsCount().toString()
+	let tags = kuro.modules.tag.tagsCount().toString()
 
 	msg.edit('', {
 		'embed': {
