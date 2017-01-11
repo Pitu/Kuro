@@ -108,9 +108,6 @@ Each module has detailed instructions inside their own files. Take a look at the
 - `gifspeed [url]`  
   Removes delay between frames of the given gif url and uploads it.
 
-- `help`  
-  Displays an embed with statistics.
-
 - `mal`  
   Prints information about your MyAnimeList username.
 
@@ -132,9 +129,6 @@ Each module has detailed instructions inside their own files. Take a look at the
 - `reload`  
   Reloads all the modules (Useful when developing).
 
-- `radio [token|search|request]`  
-  Module in development to interact with [LISTEN.moe](https://listen.moe) api.
-
 - `react [message]`  
   React to the last message with regional characters. a-z 0-9, no spaces.
 
@@ -143,6 +137,9 @@ Each module has detailed instructions inside their own files. Take a look at the
 
 - `s [name] | [add|del|ren]`  
   A module to manage stickers like Telegram does. Upload a sticker with a given name, and then make kuro paste it when you trigger the command.
+
+- `stats`  
+  Displays an embed with statistics.
 
 - `status [online|idle|dnd|offline]`  
   The status you want to appear as whenever you're offline, since using Kuro will make discord think you're always online.
