@@ -37,7 +37,7 @@ exports.run = function(msg, args) {
 	if(args[0] === 'list') return this.list()
 
 	// Not a subcommand, let's see if it's a tag and send it
-	if(_tags.hasOwnProperty(args[0])) return _msg.edit(`**__Tag: ${args[0]}__**\n${_tags[args[0]]}`)
+	if(_tags.hasOwnProperty(args[0])) return _msg.edit(_tags[args[0]])
 	
 	// Not a subcommand, not a tag, let's return the whole list
 	return this.list()
