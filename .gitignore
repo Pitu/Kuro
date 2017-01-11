@@ -5,3 +5,4 @@ stickers/
 .eslintrc.json
 config.js
 db
+commands/user.js
