@@ -147,7 +147,7 @@ Each module has detailed instructions inside their own files. Take a look at the
 - `status [online|idle|dnd|offline]`  
   The status you want to appear as whenever you're offline, since using Kuro will make discord think you're always online.
 
-- `tags [name] | [add|del|ren]`  
+- `tag [name] | [add|del|ren]`  
   Saves the given text into a tag for later usage. For example `tag add kuro https://github.com/kanadeko/Kuro` would print `https://github.com/kanadeko/Kuro` every time I do `tag kuro`
 
 - `tl`  
