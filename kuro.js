@@ -57,6 +57,9 @@ kuro.on('message', function(msg){
 
 })
 
+kuro.on('disconnect', () => { kuro.error('CLIENT: Disconnected!') })
+kuro.on('reconnect', () => { kuro.log('CLIENT: Reconnecting...', 'green') })
+
 kuro.loadCommands = function(){
 	
 	kuro.modules = {}
@@ -66,11 +69,17 @@ kuro.loadCommands = function(){
 		let name = file.slice(0, -3)
 
 		delete require.cache[require.resolve('./commands/' + file)]
-		kuro.modules[name] = require('./commands/' + file)
-		if(kuro.modules[name].hasOwnProperty('init'))
-			kuro.modules[name].init(kuro)
 
-		kuro.log(`Module ${name} is ready`)
+		try{
+			kuro.modules[name] = require('./commands/' + file)
+			if(kuro.modules[name].hasOwnProperty('init'))
+				kuro.modules[name].init(kuro)
+
+			kuro.log(`Module ${name} is ready`)
+		}catch(e){
+			kuro.error(`Error in module ${name}:\n${e.stack}`)
+		}
+		
 	})
 
 }
@@ -94,3 +103,7 @@ kuro.error = function(msg){
 
 kuro.log('Starting...', 'green')
 kuro.login(config.token)
+
+process.on('unhandledRejection', err => {
+	kuro.error(`Uncaught Promise Error:\n${err.stack}`)
+})
