@@ -3,7 +3,7 @@
 [![Code Climate](https://codeclimate.com/github/kanadeko/Kuro/badges/gpa.svg)](https://codeclimate.com/github/kanadeko/Kuro)
 [![Issue Count](https://codeclimate.com/github/kanadeko/Kuro/badges/issue_count.svg)](https://codeclimate.com/github/kanadeko/Kuro)
 
-Kuro is an easy to use self bot that is shifting more and more into a framework while preserving its ease of use. It sits on top of [discord.js](https://github.com/hydrabolt/discord.js/). NodeJS version 6+ is ***REQUIRED***
+Kuro is an easy to use self bot that is shifting more and more into a framework while preserving its ease of use. It sits on top of [discord.js](https://github.com/hydrabolt/discord.js/). NodeJS version 6+ is ***REQUIRED*** [Installing Node.js](https://nodejs.org/en/download/package-manager/)
 
 [> Check this video to see how it works!](https://my.mixtape.moe/pwcrem.webm)
 
@@ -27,7 +27,7 @@ Kuro is an easy to use self bot that is shifting more and more into a framework 
 #### Clean install:
 1. Clone the repo with `git clone https://github.com/kanadeko/Kuro`
 2. Run `npm install`
-3. Copy config.sample.json to config.json and fill the required data.
+3. Copy config.sample.js to config.js and fill the required data.
 4. To get your personal token, bring up the Developer Tools on the discord website and type `localStorage.token`. That should print your personal token to use with this bot.
 5. Run the bot with `node kuro.js`
 
