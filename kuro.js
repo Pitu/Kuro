@@ -3,7 +3,6 @@ const Discord = require('discord.js')
 const knex = require('knex')(config.database)
 const chalk = require('chalk')
 const fs = require('fs')
-const junk = require('junk')
 
 
 let filesDirectory = __dirname + '/files'
