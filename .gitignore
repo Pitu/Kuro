@@ -5,6 +5,7 @@ stickers/
 .eslintrc.json
 config.js
 db
+.env
 
 # Commands people shouldn't have :araragi:
 commands/user.js
