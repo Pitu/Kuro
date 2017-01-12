@@ -8,9 +8,6 @@ const junk = require('junk')
 
 let filesDirectory = __dirname + '/files'
 fs.existsSync(filesDirectory) || fs.mkdirSync(filesDirectory)
-fs.readdir('./commands/', function (err, files) {
-    files.filter(junk.not);
-});
 
 // Initializing the ultimate tan
 const kuro = new Discord.Client()
