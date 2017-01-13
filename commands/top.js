@@ -3,6 +3,10 @@ var os = require('os')
 exports.init = function(bot){ kuro = bot }
 
 exports.run = function(msg, args) {
+        threadCount = 0;
+        for (var i = 0; i < cpus.length; i++){
+                threadCount =i;
+        }
         msg.edit('', {
                 'embed': {
                         'title': 'Stats',
@@ -10,8 +14,8 @@ exports.run = function(msg, args) {
                         'fields': [
                                 {'name': 'Memory heapUsed', 'value': `${sizeOf(process.memoryUsage().heapUsed)} / ${sizeOf(os.totalmem())}`, 'inline': true},
                                 {'name': 'Memory heapTotal', 'value': `${sizeOf(process.memoryUsage().heapTotal)} / ${sizeOf(os.totalmem())}`, 'inline': true},
-                                {'name': 'Total Memory Used', 'value': `${sizeOf(os.totalmem()-os.freemem())}`, 'inline':true},
-                                {'name': 'CPU Model', 'value': `${os.cpus()[0].model}`},
+                                {'name': 'Total Memory Used', 'value': `${sizeOf(os.totalmem()-os.freemem())} / ${sizeOf(os.totalmem())}`, 'inline':true},
+                                {'name': 'CPU Model', 'value': `${os.cpus()[0].model} with ${threadCount + 1} threads`},
                                 {'name': 'Server Uptime', 'value': `${secondsToString(os.uptime())}`},
                                 {'name': 'Load Average 1m', 'value': `${(os.loadavg()[0]).toString().substring(0, 4)}`, 'inline': true},
                                 {'name': 'Load Average 5m', 'value': `${(os.loadavg()[1]).toString().substring(0, 4)}`, 'inline': true},
