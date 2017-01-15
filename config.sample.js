@@ -41,6 +41,11 @@ module.exports = {
 			filename: './db'
 		},
 		useNullAsDefault: true
+	},
+	lastfm: {
+		enabled: false.
+		username: '',
+		apiKey: ''
 	}
 	
 }
