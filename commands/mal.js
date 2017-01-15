@@ -2,7 +2,7 @@ let kuro
 exports.init = function(bot){ kuro = bot }
 
 exports.run = function(msg, args) {
-	
+
 	msg.edit('Loading...')
 
 	const request = require('request')
@@ -29,9 +29,8 @@ exports.run = function(msg, args) {
 									let link = $(data[i]).find('a').attr('href')
 									let title = $(data[i]).find('a').text()
 									let thing = $(data[i]).find('div.fn-grey2').text().split('·')[0].trim()
-									
-									// Until a better regex appears
-									thing = thing.replace(/(\r\n\s|\n|\r|\s)/gm,'')
+
+									thing = thing.replace(/\s{1,}/gm,' ')
 
 									description = description + `[${title}](${link}) - ${thing} \n`
 								}
@@ -47,7 +46,7 @@ exports.run = function(msg, args) {
 										'title': username + '\'s MyAnimeList Summary',
 										'url': 'https://myanimelist.net/animelist/' + username,
 										'description': description,
-										'color': 3035554,
+										'color': kuro.config.embedColor,
 										'fields': [
 											{ 'name': 'Watching', 'value': result.myanimelist.myinfo[0].user_watching[0], 'inline': true },
 											{ 'name': 'Completed', 'value': result.myanimelist.myinfo[0].user_completed[0], 'inline': true },
