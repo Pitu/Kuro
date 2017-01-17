@@ -1,6 +1,6 @@
 module.exports = {
         //Enable or Disable the Last.FM feature
-        enabled: true,
+        enabled: false,
         //Your Last.FM username
         username: '',
         //Your Last.FM API Key
