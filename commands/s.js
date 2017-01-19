@@ -85,17 +85,15 @@ exports.add = function(args){
 	// Prepare the destination container
 	let dest = assets + '/' + name
 	let url = ''
-
 	// Stupid discord renaming stuff, breaks everything
 	let discordFilename = ''
-
 	if(args[1] !== undefined)
 		url = args[1]
 	else
-		if(_msg.attachments.length > 0)
-			if('proxy_url' in _msg.attachments[0]){
-				url = _msg.attachments[0].proxy_url
-				discordFilename = _msg.attachments[0].filename
+		if( typeof _msg.attachments.first() != 'undefined'){
+			if('proxyURL' in _msg.attachments.first())
+				url = _msg.attachments.first().proxyURL
+				discordFilename = _msg.attachments.first().filename
 			}
 
 	if(url === ''){
