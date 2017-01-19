@@ -90,7 +90,7 @@ exports.add = function(args){
 	if(args[1] !== undefined)
 		url = args[1]
 	else
-		if( typeof _msg.attachments.first() != 'undefined'){
+		if( typeof _msg.attachments.first() !== 'undefined'){
 			if('proxyURL' in _msg.attachments.first())
 				url = _msg.attachments.first().proxyURL
 				discordFilename = _msg.attachments.first().filename
