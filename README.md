@@ -138,6 +138,9 @@ Each module has detailed instructions inside their own files. Take a look at the
 - `s [name] | [add|del|ren]`  
   A module to manage stickers like Telegram does. Upload a sticker with a given name, and then make kuro paste it when you trigger the command.
 
+- `smug`  
+  Displays smug looking anime girls with patronizing looks on their faces.
+
 - `stats`  
   Displays an embed with statistics.
 
