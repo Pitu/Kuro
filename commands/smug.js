@@ -10,7 +10,7 @@ exports.run = function(msg, args) {
 				return
 			}
 			let response = JSON.parse(body)
-			msg.channel.sendFile('https://smugs.safe.moe/'+response.url, 'smug.jpg')
+			msg.channel.sendFile('https://smugs.safe.moe/'+response.url, response.imageID + '.png')
 		}
 	})
 }
