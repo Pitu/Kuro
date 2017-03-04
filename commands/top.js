@@ -1,25 +1,32 @@
 let kuro
-var os = require('os')
+let os = require('os');
+let disk = require('diskusage');
 exports.init = function(bot){ kuro = bot }
 
 exports.run = function(msg, args) {
-        threadCount = 0;
-        for (var i = 0; i < cpus.length; i++){
-                threadCount =i;
+        let disk_free = 0;
+        let disk_total = 0;
+        disk.check('/', function(err, info) {
+                disk_free = info.free;
+                disk_total = info.total;
+        });
+        let cpus = os.cpus()
+        let thread_count = 0;
+        for (let i = 0; i < cpus.length; i++){
+                thread_count = i;
         }
         msg.edit('', {
                 'embed': {
                         'title': 'Stats',
-                        'description': `Uptime: ${secondsToString(process.uptime())}`,
+                        'description': `Kuro uptime: ${secondsToString(process.uptime())}`,
                         'fields': [
                                 {'name': 'Memory heapUsed', 'value': `${sizeOf(process.memoryUsage().heapUsed)} / ${sizeOf(os.totalmem())}`, 'inline': true},
                                 {'name': 'Memory heapTotal', 'value': `${sizeOf(process.memoryUsage().heapTotal)} / ${sizeOf(os.totalmem())}`, 'inline': true},
                                 {'name': 'Total Memory Used', 'value': `${sizeOf(os.totalmem()-os.freemem())} / ${sizeOf(os.totalmem())}`, 'inline':true},
-                                {'name': 'CPU Model', 'value': `${os.cpus()[0].model} with ${threadCount + 1} threads`},
+                                {'name': 'Free Disk', 'value': `${sizeOf(disk_free)}`, 'inline': true},
+                                {'name': 'Total Disk', 'value': `${sizeOf(disk_total)}`, 'inline':true},
+                                {'name': 'System Load', 'value': `${os.loadavg()[0].toFixedDown(2)}%`, 'inline': true},
                                 {'name': 'Server Uptime', 'value': `${secondsToString(os.uptime())}`},
-                                {'name': 'Load Average 1m', 'value': `${(os.loadavg()[0]).toString().substring(0, 4)}`, 'inline': true},
-                                {'name': 'Load Average 5m', 'value': `${(os.loadavg()[1]).toString().substring(0, 4)}`, 'inline': true},
-                                {'name': 'Load Average 15m', 'value': `${(os.loadavg()[2]).toString().substring(0, 4)}`, 'inline': true}
                         ],
                         'color': kuro.config.embedColor
                 }

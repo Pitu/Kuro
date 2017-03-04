@@ -14,8 +14,9 @@ exports.init = function(bot){
 			if(row.length > 0){
 				// Seems like data is stored. We should apply the status now
 				kuro.log('Setting game status to: ' + row[0].game)
-				kuro.user.setGame(row[0].game)
-				return
+				if(row[0].game === '')
+					return kuro.user.setGame(null)
+				return kuro.user.setGame(row[0].game)
 			}
 
 			// Populate it
@@ -31,7 +32,7 @@ exports.run = function(msg, args) {
 	_msg = msg
 
 	if(args.length === 0){
-		kuro.user.setGame('')
+		kuro.user.setGame(null)
 		this.save('')
 		return
 	}
