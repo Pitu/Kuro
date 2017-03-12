@@ -58,7 +58,7 @@ kuro.on('message', function(msg){
 })
 
 kuro.on('disconnect', () => { kuro.error('CLIENT: Disconnected!') })
-kuro.on('reconnect', () => { kuro.log('CLIENT: Reconnecting...', 'green') })
+kuro.on('reconnecting', () => { kuro.log('CLIENT: Reconnecting...', 'green') })
 
 kuro.loadCommands = function(){
 	
