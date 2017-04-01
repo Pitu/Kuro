@@ -5,7 +5,7 @@ exports.run = function(msg, args) {
 	let user = msg.guild.members.get(id)
 	if (!user) return msg.delete()
 
-	msg.edit({
+	return msg.edit({
 		embed: {
 			title: `User info for ${user.user.username}`,
 			thumbnail: { url: `https://cdn.discordapp.com/avatars/${user.user.id}/${user.user.avatar}` },
