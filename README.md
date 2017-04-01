@@ -10,15 +10,14 @@ NodeJS version 6+ is ***REQUIRED***. [Installing Node.js](https://nodejs.org/en/
 
 ### What's new in v4.0.2:
 1. New coding style and several improvements
-2. Removed `let me google that for you` command
-3. Added `google` command
-4. Added a Telegram notifications plugin
+2. Added a Telegram notifications plugin
+3. Added `user` command. `Usage: !user @someone`
+4. Added `google` command. `Usage: !google some really stupid question`
 
 Whenever you are running a selfbot, mobile push notifications don't work. This is caused by the bot being online, so Discord doesn't trigger a notification on your mobile device. This bothers me a lot, since I miss a lot of messages or pings whenever I'm away. If you use Telegram, you can create a bot token and put it here, this way whenever you get a notification it will send you a message through it.
 
 ## Installing:
 
----
 #### Upgrading:
 
 1. **This is super important:** This update breaks a few things, including the loss of all your stickers. As a super experimental stuff, you *__could__* try to run `!s migrate` and if you're lucky enough, it will migrate your stickers to the new system.  
@@ -32,8 +31,6 @@ Whenever you are running a selfbot, mobile push notifications don't work. This i
 3. Copy config.sample.js to config.js and fill the required data.
 4. To get your personal token, bring up the Developer Tools on the discord website and type `localStorage.token`. That should print your personal token to use with this bot.
 5. Run the bot with `node kuro.js`
-
----
 
 ## Overview of the config.sample.json file:
 ```javascript
@@ -74,8 +71,6 @@ let config = {
 }
 ```
 
----
-
 ## Modules:
 This new update brings every command in the form of separate modules. Inside each module you can make up the stuff you want, and you can execute it by calling the module name without the extension. There's a sample module ready for you to duplicate called `base.js`.
 
@@ -95,8 +90,6 @@ exports.run = function(msg, args) {
 
 Pretty easy stuff.
 If you want me to include a module you've made, send a PR with your stuff and I'll look at it.
-
----
 
 ## Bundled modules
 
