@@ -7,10 +7,13 @@ const fs = require('fs')
 let TelegramBot
 let telegram
 
-if (config.telegramNotifications.active) {
-	TelegramBot = require('node-telegram-bot-api')
-	telegram = new TelegramBot(config.telegramNotifications.botToken, { polling: false })
+if (config.hasOwnProperty('telegramNotifications')) {
+	if (config.telegramNotifications.active) {
+		TelegramBot = require('node-telegram-bot-api')
+		telegram = new TelegramBot(config.telegramNotifications.botToken, { polling: false })
+	}
 }
+
 
 let filesDirectory = __dirname + '/files'
 fs.existsSync(filesDirectory) || fs.mkdirSync(filesDirectory)
@@ -38,17 +41,19 @@ kuro.once('ready', () => {
 kuro.on('message', (msg) => {
 
 	// If Telegram notifications are active, make extra checks
-	if (config.telegramNotifications.active) {
-		// Check if someone is sending us a DM
-		if (msg.channel.type === 'dm') {
-			if (msg.author.id !== kuro.user.id) {
-				return kuro.sendTelegramNotification('DM', msg.author.username, msg.content)
+	if (config.hasOwnProperty('telegramNotifications')) {
+		if (config.telegramNotifications.active) {
+			// Check if someone is sending us a DM
+			if (msg.channel.type === 'dm') {
+				if (msg.author.id !== kuro.user.id) {
+					return kuro.sendTelegramNotification('DM', msg.author.username, msg.content)
+				}
 			}
-		}
 
-		// Check if it's someone mentioning us
-		if (msg.isMentioned(kuro.user)) {
-			return kuro.sendTelegramNotification('Ping', msg.author.username, msg.content)
+			// Check if it's someone mentioning us
+			if (msg.isMentioned(kuro.user)) {
+				return kuro.sendTelegramNotification('Ping', msg.author.username, msg.content)
+			}
 		}
 	}
 

@@ -13,7 +13,7 @@ NodeJS version 6+ is ***REQUIRED***. [Installing Node.js](https://nodejs.org/en/
 2. Added a Telegram notifications plugin
 3. Added `user` command. `Usage: !user @someone`
 4. Added `google` command. `Usage: !google some really stupid question`
-5. Added `flip` command. `Usage: !flip this awesome text`
+5. Added `flip` command. `sllɐqǝzɐɯɐ sı sıɥʇ`
 
 Whenever you are running a selfbot, mobile push notifications don't work. This is caused by the bot being online, so Discord doesn't trigger a notification on your mobile device. This bothers me a lot, since I miss a lot of messages or pings whenever I'm away. If you use Telegram, you can create a bot token and put it here, this way whenever you get a notification it will send you a message through it.
 
