@@ -35,15 +35,15 @@ kuro.once('ready', () => {
 	kuro.log('Kuro is ready!', 'green')
 })
 
-kuro.on('message', function(msg){
+kuro.on('message', (msg) => {
 
 	// If Telegram notifications are active, make extra checks
 	if (config.telegramNotifications.active) {
-
 		// Check if someone is sending us a DM
 		if (msg.channel.type === 'dm') {
-			if (msg.author.id !== kuro.user.id)
+			if (msg.author.id !== kuro.user.id) {
 				return kuro.sendTelegramNotification('DM', msg.author.username, msg.content)
+			}
 		}
 
 		// Check if it's someone mentioning us
@@ -65,18 +65,19 @@ kuro.on('message', function(msg){
 	let tmp = msg.content.substring(config.prefix.length, msg.length).split(' ')
 	let args = []
 
-	for (let i = 1; i < tmp.length; i++)
+	for (let i = 1; i < tmp.length; i++) {
 		args.push(tmp[i])
+	}
 
 	// Store the command separately
 	let cmd = tmp[0]
 
 	if (kuro.modules.hasOwnProperty(cmd)) return kuro.modules[cmd].run(msg, args)
-	if (config.commandError.sendToModule === true)
+	if (config.commandError.sendToModule === true) {
 		return kuro.modules[config.commandError.module][config.commandError.function](msg, cmd)
+	}
 
 	return msg.delete()
-
 })
 
 kuro.on('disconnect', () => {
@@ -85,33 +86,32 @@ kuro.on('disconnect', () => {
 })
 kuro.on('reconnecting', () => { kuro.log('CLIENT: Reconnecting...', 'green') })
 
-kuro.loadCommands = function(){
-
+kuro.loadCommands = function() {
 	kuro.modules = {}
 
 	// Load up all the modules
-	fs.readdirSync('./commands/').forEach(function(file) {
+	fs.readdirSync('./commands/').forEach((file) => {
 		let name = file.slice(0, -3)
 
-		delete require.cache[require.resolve('./commands/' + file)]
+		delete require.cache[require.resolve(`./commands/${file}`)]
 
 		try {
-			kuro.modules[name] = require('./commands/' + file)
-			if (kuro.modules[name].hasOwnProperty('init'))
+			kuro.modules[name] = require(`./commands/${file}`)
+			if (kuro.modules[name].hasOwnProperty('init')) {
 				kuro.modules[name].init(kuro)
+			}
 
 			kuro.log(`Module ${name} is ready`)
 		} catch (e) {
 			kuro.error(`Error in module ${name}:\n${e.stack}`)
 		}
 	})
-
 }
 
-kuro.edit = function(msg, content, timeout = 3000){
+kuro.edit = function(msg, content, timeout = 3000) {
 	if (timeout === 0) return msg.edit(content).catch(console.error)
 
-	msg.edit(content).then(() => {
+	return msg.edit(content).then(() => {
 		setTimeout(() => msg.delete().catch(console.error), timeout)
 	})
 }
@@ -121,13 +121,13 @@ kuro.sendTelegramNotification = (type, user, message) => {
 	telegram.sendMessage(config.telegramNotifications.userId, msg, { parse_mode: 'Markdown' })
 }
 
-kuro.log = function(msg, color){
-	if (color === undefined) console.log('[Kuro]: ' + msg)
-	else console.log(chalk[color]('[Kuro]: ' + msg))
+kuro.log = function(msg, color) {
+	if (color === undefined) console.log(`[Kuro]: ${msg}`)
+	else console.log(chalk[color](`[Kuro]: ${msg}`))
 }
 
-kuro.error = function(msg){
-	console.log(chalk.red('[Kuro]: ' + msg))
+kuro.error = function(msg) {
+	console.log(chalk.red(`[Kuro]: ${msg}`))
 }
 
 kuro.log('Starting...', 'green')
