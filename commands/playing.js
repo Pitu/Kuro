@@ -1,52 +1,48 @@
 let kuro
 let _table = 'playing'
-let _msg
 
-exports.init = function(bot){
+exports.init = function(bot) {
 	kuro = bot
 
 	// Create the table where we will be storing this module's data
-	kuro.db.schema.createTableIfNotExists(_table, function (table) {
+	kuro.db.schema.createTableIfNotExists(_table, (table) => {
 		table.increments()
 		table.string('game')
-	}).then(function () {
-		kuro.db.table(_table).then(function(row){
-			if(row.length > 0){
+	}).then(() => {
+		kuro.db.table(_table).then((row) => {
+			if (row.length > 0) {
 				// Seems like data is stored. We should apply the status now
-				kuro.log('Setting game status to: ' + row[0].game)
-				if(row[0].game === '')
-					return kuro.user.setGame(null)
+				kuro.log(`Setting game status to: ${row[0].game}`)
+				if (row[0].game === '') return kuro.user.setGame(null)
 				return kuro.user.setGame(row[0].game)
 			}
 
 			// Populate it
-			kuro.db.table(_table).insert({
-				game: ''
-			}).then(function() {})
+			kuro.db.table(_table)
+				.insert({ game: '' })
+				.then(function() {}) // eslint-disable-line
 		})
-	}).catch(function(error) { kuro.error(error) })
+	}).catch((error) => { kuro.error(error) })
 }
 
 exports.run = function(msg, args) {
-
-	_msg = msg
-
-	if(args.length === 0){
+	if (args.length === 0) {
 		kuro.user.setGame(null)
-		this.save('')
+		this.save('', msg)
 		return
 	}
 
 	let text = args.join(' ')
 	kuro.user.setGame(text)
-	this.save(text)
+	this.save(text, msg)
 }
 
-exports.save = function(value){
-	kuro.db.table(_table).where('id', 1).update({
-		game: value
-	}).then(function(){
-		if(value === '') return kuro.edit(_msg, 'You succesfully removed your playing status.')
-		return kuro.edit(_msg, 'Succesfully changed your playing status.')
-	}).catch(function(error) { kuro.error(error) })
+exports.save = function(value, msg) {
+	kuro.db.table(_table).where('id', 1)
+		.update({ game: value })
+		.then(() => {
+			if (value === '') return kuro.edit(msg, 'You succesfully removed your playing status.')
+			return kuro.edit(msg, 'Succesfully changed your playing status.')
+		})
+		.catch((error) => { kuro.error(error) })
 }

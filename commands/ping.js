@@ -1,4 +1,4 @@
-exports.run = function(msg, args) {
+exports.run = function(msg) {
 	msg.delete()
 	msg.channel.sendMessage('Ping?')
 	.then(message => {

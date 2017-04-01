@@ -1,14 +1,14 @@
 let kuro
-exports.init = function(bot){ kuro = bot }
+exports.init = function(bot) { kuro = bot }
 
 exports.run = function(msg, args) {
 	let messagecount = parseInt(args, 10)
-	msg.channel.fetchMessages({limit: 100})
+	msg.channel.fetchMessages({ limit: 100 })
 		.then(messages => {
-			let msg_array = messages.array()
-			msg_array = msg_array.filter(m => m.author.id === kuro.user.id)
-			msg_array.length = messagecount + 1
-			msg_array.map(m => m.delete().catch(console.error))
+			let msgArray = messages.array()
+			msgArray = msgArray.filter(m => m.author.id === kuro.user.id)
+			msgArray.length = messagecount + 1
+			msgArray.map(m => m.delete().catch(console.error))
 		}
 	)
 }
