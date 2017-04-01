@@ -3,16 +3,18 @@
 [![Code Climate](https://codeclimate.com/github/kanadeko/Kuro/badges/gpa.svg)](https://codeclimate.com/github/kanadeko/Kuro)
 [![Issue Count](https://codeclimate.com/github/kanadeko/Kuro/badges/issue_count.svg)](https://codeclimate.com/github/kanadeko/Kuro)
 
-Kuro is an easy to use self bot that is shifting more and more into a framework while preserving its ease of use. It sits on top of [discord.js](https://github.com/hydrabolt/discord.js/). NodeJS version 6+ is ***REQUIRED*** [Installing Node.js](https://nodejs.org/en/download/package-manager/)
+Kuro is an easy to use self bot that is shifting more and more into a framework while preserving its ease of use. It sits on top of [discord.js](https://github.com/hydrabolt/discord.js/). 
+NodeJS version 6+ is ***REQUIRED***. [Installing Node.js](https://nodejs.org/en/download/package-manager/)
 
 [> Check this video to see how it works!](https://my.mixtape.moe/pwcrem.webm)
 
-## Version 4.0 is out!
-### What's new:
-1. Rewrote pretty much everything since Kuro is shifting into a framework.
-2. Each command has it's own file now, meaning you can add commands to your bot by simply dropping a .js file into the ./commands/ folder.
-3. Removed json files for configuration and value storing. Everything is handled by [knex](https://knexjs.org) and sqlite now.
-4. Added a new configuration setting to redirect unknown commands to a specific module. Check `config.js` for further instructions and sample.
+### What's new in v4.0.2:
+1. New coding style and several improvements
+2. Removed `let me google that for you` command
+3. Added `google` command
+4. Added a Telegram notifications plugin
+
+Whenever you are running a selfbot, mobile push notifications don't work. This is caused by the bot being online, so Discord doesn't trigger a notification on your mobile device. This bothers me a lot, since I miss a lot of messages or pings whenever I'm away. If you use Telegram, you can create a bot token and put it here, this way whenever you get a notification it will send you a message through it.
 
 ## Installing:
 
@@ -45,6 +47,13 @@ let config = {
 
   // Your MyAnimeList username
   MALusername: '',
+
+  // Telegram data
+  telegramNotifications: {
+    active: false,
+    botToken: 'YOUR-TELEGRAM-BOT-TOKEN',
+    userId: 'The user id your Telegram token should send a mesage to'
+  },
 
   // Unrecognized commands
   commandError: {
