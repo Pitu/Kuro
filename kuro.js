@@ -4,6 +4,13 @@ const knex = require('knex')(config.database)
 const chalk = require('chalk')
 const fs = require('fs')
 
+let TelegramBot
+let telegram
+
+if (config.telegramNotifications.active) {
+	TelegramBot = require('node-telegram-bot-api')
+	telegram = new TelegramBot(config.telegramNotifications.botToken, { polling: false })
+}
 
 let filesDirectory = __dirname + '/files'
 fs.existsSync(filesDirectory) || fs.mkdirSync(filesDirectory)
@@ -30,6 +37,21 @@ kuro.once('ready', () => {
 
 kuro.on('message', function(msg){
 
+	// If Telegram notifications are active, make extra checks
+	if (config.telegramNotifications.active) {
+
+		// Check if someone is sending us a DM
+		if (msg.channel.type === 'dm') {
+			if (msg.author.id !== kuro.user.id)
+				return kuro.sendTelegramNotification('DM', msg.author.username, msg.content)
+		}
+
+		// Check if it's someone mentioning us
+		if (msg.isMentioned(kuro.user)) {
+			return kuro.sendTelegramNotification('Ping', msg.author.username, msg.content)
+		}
+	}
+
 	// Ignore if the message is not ours
 	if (msg.author.id !== kuro.user.id) return
 
@@ -43,28 +65,28 @@ kuro.on('message', function(msg){
 	let tmp = msg.content.substring(config.prefix.length, msg.length).split(' ')
 	let args = []
 
-	for(let i = 1; i < tmp.length; i++)
+	for (let i = 1; i < tmp.length; i++)
 		args.push(tmp[i])
 
 	// Store the command separately
 	let cmd = tmp[0]
 
-	if(kuro.modules.hasOwnProperty(cmd)) return kuro.modules[cmd].run(msg, args)
-	if(config.commandError.sendToModule === true)
+	if (kuro.modules.hasOwnProperty(cmd)) return kuro.modules[cmd].run(msg, args)
+	if (config.commandError.sendToModule === true)
 		return kuro.modules[config.commandError.module][config.commandError.function](msg, cmd)
 
 	return msg.delete()
 
 })
 
-kuro.on('disconnect', () => { 
-	kuro.error('CLIENT: Disconnected!');
-	process.exit();
+kuro.on('disconnect', () => {
+	kuro.error('CLIENT: Disconnected!')
+	process.exit()
 })
 kuro.on('reconnecting', () => { kuro.log('CLIENT: Reconnecting...', 'green') })
 
 kuro.loadCommands = function(){
-	
+
 	kuro.modules = {}
 
 	// Load up all the modules
@@ -73,30 +95,34 @@ kuro.loadCommands = function(){
 
 		delete require.cache[require.resolve('./commands/' + file)]
 
-		try{
+		try {
 			kuro.modules[name] = require('./commands/' + file)
-			if(kuro.modules[name].hasOwnProperty('init'))
+			if (kuro.modules[name].hasOwnProperty('init'))
 				kuro.modules[name].init(kuro)
 
 			kuro.log(`Module ${name} is ready`)
-		}catch(e){
+		} catch (e) {
 			kuro.error(`Error in module ${name}:\n${e.stack}`)
 		}
-		
 	})
 
 }
 
 kuro.edit = function(msg, content, timeout = 3000){
-	if(timeout === 0) return msg.edit(content).catch(console.error)
+	if (timeout === 0) return msg.edit(content).catch(console.error)
 
 	msg.edit(content).then(() => {
 		setTimeout(() => msg.delete().catch(console.error), timeout)
 	})
 }
 
+kuro.sendTelegramNotification = (type, user, message) => {
+	const msg = `*${type}* from *${user}*: \n${message}`
+	telegram.sendMessage(config.telegramNotifications.userId, msg, { parse_mode: 'Markdown' })
+}
+
 kuro.log = function(msg, color){
-	if(color === undefined) console.log('[Kuro]: ' + msg)
+	if (color === undefined) console.log('[Kuro]: ' + msg)
 	else console.log(chalk[color]('[Kuro]: ' + msg))
 }
 

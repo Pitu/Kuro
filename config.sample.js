@@ -23,9 +23,15 @@ module.exports = {
 		*/
 	},
 
+	telegramNotifications: {
+		active: false,
+		botToken: 'YOUR-TELEGRAM-BOT-TOKEN',
+		userId: 'The user id your Telegram token should send a mesage to'
+	},
+
 	// Border color for embeds, defaults to Kuro one
 	embedColor: 15473237,
-	
+
 	// Still in development, don't touch
 	server: {
 		enabled: false,
@@ -33,7 +39,7 @@ module.exports = {
 		port: 8080,
 		duration: 1
 	},
-	
+
 	// The following values shouldn't be touched
 	database: {
 		client: 'sqlite3',
@@ -42,5 +48,5 @@ module.exports = {
 		},
 		useNullAsDefault: true
 	}
-	
+
 }
