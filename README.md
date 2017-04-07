@@ -14,7 +14,7 @@ NodeJS version 6+ is ***REQUIRED***. [Installing Node.js](https://nodejs.org/en/
 3. Run `kuro-cli`
 4. Follow the instructions on screen
 
-`kuro-cli` is a utility that will install and manage your Kuro installation. Whenever there's a new version available you can run `kuro-cli` and it will download, upgrade, update dependencies and restart automatically. Some options are not covered on the cli just yet, so you can go ahead and open `config.json` to look and modify them if you want.
+[kuro-cli](https://github.com/Pitu/kuro-cli) is a utility that will install and manage your Kuro installation. Whenever there's a new version available you can run `kuro-cli` and it will download, upgrade, update dependencies and restart automatically. Some options are not covered on the cli just yet, so you can go ahead and open `config.json` to look and modify them if you want.
 
 ### What's new in v4.0.2:
 1. New coding style and several improvements
