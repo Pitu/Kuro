@@ -8,6 +8,14 @@ NodeJS version 6+ is ***REQUIRED***. [Installing Node.js](https://nodejs.org/en/
 
 [> Check this video to see how it works!](https://my.mixtape.moe/pwcrem.webm)
 
+## Installing:
+1. Ensure you have node installed
+2. Run `npm i -g kuro-cli`
+3. Run `kuro-cli`
+4. Follow the instructions on screen
+
+`kuro-cli` is a utility that will install and manage your Kuro installation. Whenever there's a new version available you can run `kuro-cli` and it will download, upgrade, update dependencies and restart automatically. Some options are not covered on the cli just yet, so you can go ahead and open `config.json` to look and modify them if you want.
+
 ### What's new in v4.0.2:
 1. New coding style and several improvements
 2. Added a Telegram notifications plugin
@@ -16,61 +24,6 @@ NodeJS version 6+ is ***REQUIRED***. [Installing Node.js](https://nodejs.org/en/
 5. Added `flip` command. `sllɐqǝzɐɯɐ sı sıɥʇ`
 
 Whenever you are running a selfbot, mobile push notifications don't work. This is caused by the bot being online, so Discord doesn't trigger a notification on your mobile device. This bothers me a lot, since I miss a lot of messages or pings whenever I'm away. If you use Telegram, you can create a bot token and put it here, this way whenever you get a notification it will send you a message through it.
-
-## Installing:
-
-#### Upgrading:
-
-1. **This is super important:** This update breaks a few things, including the loss of all your stickers. As a super experimental stuff, you *__could__* try to run `!s migrate` and if you're lucky enough, it will migrate your stickers to the new system.  
-2. Update your `config.js` file with the new added values. Check them out on the `config.sample.js` file. (**Note the change from `config.json` to `config.js`**)
-3. Delete `node_modules/` folder
-4. `npm install`
-
-#### Clean install:
-1. Clone the repo with `git clone https://github.com/kanadeko/Kuro`
-2. Run `npm install`
-3. Copy config.sample.js to config.js and fill the required data.
-4. To get your personal token, bring up the Developer Tools on the discord website and type `localStorage.token`. That should print your personal token to use with this bot.
-5. Run the bot with `node kuro.js`
-
-## Overview of the config.sample.json file:
-```javascript
-let config = {
-
-  // This is your Discord personal token
-  token: '',
-
-  // Prefix on which the bot will be hooked to
-  prefix: '!',
-
-  // Your MyAnimeList username
-  MALusername: '',
-
-  // Telegram data
-  telegramNotifications: {
-    active: false,
-    botToken: 'YOUR-TELEGRAM-BOT-TOKEN',
-    userId: 'The user id your Telegram token should send a mesage to'
-  },
-
-  // Unrecognized commands
-  commandError: {
-    // Should we attempt to redirect every unrecognized command to a module?
-    sendToModule: true,
-    // Which module?
-    module: 's',
-    // Which function?
-    function: 'run'
-    /*
-      In this case, any unrecognized command will be redirected to the
-      stickers module to see if it exists as a sticker and if it does, send it.
-    */
-  },
-
-  // Border color for embeds, defaults to Kuro one
-  embedColor: 15473237
-}
-```
 
 ## Modules:
 This new update brings every command in the form of separate modules. Inside each module you can make up the stuff you want, and you can execute it by calling the module name without the extension. There's a sample module ready for you to duplicate called `base.js`.
