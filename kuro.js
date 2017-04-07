@@ -1,8 +1,15 @@
-const config = require('./config.js')
+const fs = require('fs')
+const path = require('path')
+
+if (!fs.existsSync(path.join(__dirname, 'config.json'))) {
+	console.log('config.json file not found, please run kuro-cli or create it on your own')
+	process.exit()
+}
+
+const config = require('./config.json')
 const Discord = require('discord.js')
 const knex = require('knex')(config.database)
 const chalk = require('chalk')
-const fs = require('fs')
 
 let TelegramBot
 let telegram
@@ -15,7 +22,7 @@ if (config.hasOwnProperty('telegramNotifications')) {
 }
 
 
-let filesDirectory = __dirname + '/files'
+let filesDirectory = path.join(__dirname, 'files')
 fs.existsSync(filesDirectory) || fs.mkdirSync(filesDirectory)
 
 // Initializing the ultimate tan
