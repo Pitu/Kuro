@@ -8,6 +8,12 @@ NodeJS version 6+ is ***REQUIRED***. [Installing Node.js](https://nodejs.org/en/
 
 [> Check this video to see how it works!](https://my.mixtape.moe/pwcrem.webm)
 
+### v4.1.0 Important Notes:
+This only applies if you are upgrading from a previous version.
+In order to make the chat less jumpy and contribute with data caps and mobile users, sticker now behave differently than they did before. Stickers get uploaded to [safe.moe](https://safe.moe) now so they can be used inside an embed. By using embeds, kuro can now edit your message to display the sticker instead of deleting it and sending a new one. Even though that embeds are ugly this makes it so everyone can see your sticker faster by allowing caching of the URL on Discord's side.
+
+So if you are upgrading to a new version, please run `!s migrate` to migrate your stickers to the new embed system.
+
 ## Installing:
 1. Ensure you have node installed
 2. Run `npm i -g kuro-cli`
@@ -16,14 +22,7 @@ NodeJS version 6+ is ***REQUIRED***. [Installing Node.js](https://nodejs.org/en/
 
 `kuro-cli` is a utility that will install and manage your Kuro installation. Whenever there's a new version available you can run `kuro-cli` and it will download, upgrade, update dependencies and restart automatically. Some options are not covered on the cli just yet, so you can go ahead and open `config.json` to look and modify them if you want.
 
-### What's new in v4.0.2:
-1. New coding style and several improvements
-2. Added a Telegram notifications plugin
-3. Added `user` command. `Usage: !user @someone`
-4. Added `google` command. `Usage: !google some really stupid question`
-5. Added `flip` command. `sllɐqǝzɐɯɐ sı sıɥʇ`
-
-Whenever you are running a selfbot, mobile push notifications don't work. This is caused by the bot being online, so Discord doesn't trigger a notification on your mobile device. This bothers me a lot, since I miss a lot of messages or pings whenever I'm away. If you use Telegram, you can create a bot token and put it here, this way whenever you get a notification it will send you a message through it.
+Whenever you are running a selfbot, mobile push notifications don't work. This is caused by the bot being online, so Discord doesn't trigger a notification on your mobile device. This bothers me a lot, since I miss a lot of messages or pings whenever I'm away. If you use Telegram, you can create a bot token and put it in the `config.json` file, this way whenever you get a notification it will send you a message through it.
 
 ## Modules:
 This new update brings every command in the form of separate modules. Inside each module you can make up the stuff you want, and you can execute it by calling the module name without the extension. There's a sample module ready for you to duplicate called `base.js`.
@@ -58,11 +57,17 @@ Each module has detailed instructions inside their own files. Take a look at the
 - `eyes`  
   A module that edits a message to add the effect of animated eyes. You probably should update the emoji name if you're not on Pilar's server.
 
+- `flip <this is amazing>`  
+  sllɐqǝzɐɯɐ sı sıɥʇ
+
 - `getcommand [module]`  
   Sends the specified module's source to the chat. Ex: `!getcommand base` would print `base.js` contents to chat.
 
 - `gifspeed [url]`  
   Removes delay between frames of the given gif url and uploads it.
+
+- `google <some stupid question>`  
+  Creates a link to Google with your query when someone asks stupid questions
 
 - `mal`  
   Prints information about your MyAnimeList username.
@@ -111,3 +116,6 @@ Each module has detailed instructions inside their own files. Take a look at the
 
 - `uptime`  
   Displays how long the bot has been running.
+
+- `user <@user>`  
+  Displays information about the tagged user

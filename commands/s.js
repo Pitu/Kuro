@@ -4,8 +4,11 @@ let _stickers = {}
 let _table = 'stickers'
 let assets = './files/stickers'
 const fs = require('fs')
+const axios = require('axios')
+const FormData = require('form-data')
+const concat = require('concat-stream')
 
-exports.init = function(bot){
+exports.init = function(bot) {
 	kuro = bot
 
 	// Create sticker folder if it doesn't exist
@@ -16,11 +19,16 @@ exports.init = function(bot){
 		table.increments()
 		table.string('name')
 		table.string('file')
+		table.string('url')
 	}).then(() => {
 		// Lets load up the existing stickers
 		bot.db.table(_table).then((rows) => {
-			for (let row of rows){
-				_stickers[row.name] = row.file
+			for (let row of rows) {
+				if (row.url !== '' && row.url !== undefined) {
+					_stickers[row.name] = row.url
+				} else {
+					_stickers[row.name] = row.file
+				}
 			}
 		})
 	})
@@ -28,7 +36,7 @@ exports.init = function(bot){
 }
 
 exports.run = function(msg, args) {
-
+	console.log(args)
 	_msg = msg
 
 	if (!(args instanceof Array)) {
@@ -56,15 +64,22 @@ exports.run = function(msg, args) {
 }
 
 exports.sendSticker = function(name) {
+	if (_stickers[name].startsWith('http')) {
+		_msg.edit({
+			embed: {
+				image: { url: 'https://lolisafe.moe/gQ7eQGym.jpg' }
+			}
+		});
+	} else {
+		let file = `${assets}/${_stickers[name]}`
+		fs.access(file, fs.constants.R_OK, (err) => {
+			if (err) return _msg.edit(`**Error:**\n${err}`)
 
-	let file = `${assets}/${_stickers[name]}`
-	fs.access(file, fs.constants.R_OK, (err) => {
-		if (err) return _msg.edit(`**Error:**\n${err}`)
-
-		_msg.delete()
-		let img = fs.readFileSync(file)
-		return _msg.channel.sendFile(img, _stickers[name])
-	})
+			_msg.delete()
+			let img = fs.readFileSync(file)
+			return _msg.channel.sendFile(img, _stickers[name])
+		})
+	}
 }
 
 exports.add = function(args) {
@@ -158,20 +173,17 @@ exports.ren = function(args) {
 }
 
 exports.list = function() {
-	if (kuro.config.server.enabled === true) {
-		this.startServer()
-	} else {
-		let list = ''
-		for (let sticker in _stickers) {
-			if ({}.hasOwnProperty.call(_stickers, sticker)) {
-				list = `${list}${sticker}, `
-			}
+	let list = ''
+	for (let sticker in _stickers) {
+		if ({}.hasOwnProperty.call(_stickers, sticker)) {
+			list = `${list}${sticker}, `
 		}
-
-		list = list.substr(0, list.length - 2)
-		return kuro.edit(_msg, `**__Stickers list__**\n\`\`\`\n${list}\n\`\`\``, 10000)
 	}
+
+	list = list.substr(0, list.length - 2)
+	return kuro.edit(_msg, `**__Stickers list__**\n\`\`\`\n${list}\n\`\`\``, 10000)
 }
+
 
 exports.downloadImage = function(name, url, dest, ext) {
 	let saveFile = require('request')
@@ -183,47 +195,89 @@ exports.downloadImage = function(name, url, dest, ext) {
 		.pipe(fs.createWriteStream(dest))
 
 	saveFile.on('finish', () => {
-		kuro.db.table(_table).insert({
-			name: name,
-			file: `${name}.${ext}`
+		this.uploadImage(name, dest, ext)
+	})
+}
+
+exports.uploadImage = function(name, dest, ext) {
+	const fd = new FormData()
+
+	fd.append('files[]', fs.createReadStream(dest))
+	fd.pipe(concat({ encoding: 'buffer' }, data => {
+		axios.post('https://safe.moe/api/upload', data, { headers: fd.getHeaders() })
+		.then((response) => {
+			if (response.data.success === false) {
+				console.error('Error uploading to safe.moe: ', response.description)
+				kuro.error('Error saving sticker. Check logs')
+				return this.saveStickerToDB(name, ext, '')
+			}
+
+			return this.saveStickerToDB(name, ext, response.data.files[0].url)
 		})
-		.then(() => {
-			_stickers[name] = `${name}.${ext}`
-			kuro.edit(_msg, 'Sticker added', 1000)
-		})
-		.catch((e) => { kuro.edit(_msg, `Error: \n${e}`, 0) })
+		.catch((err) => console.log(err))
+	}))
+}
+
+exports.saveStickerToDB = function(name, ext, url) {
+	kuro.db.table(_table).insert({
+		name: name,
+		file: `${name}.${ext}`,
+		url: url
+	})
+	.then(() => {
+		_stickers[name] = `${name}.${ext}`
+		if (url !== '') _stickers[name] = url
+		kuro.edit(_msg, 'Sticker added', 1000)
 	})
 }
 
 exports.migrate = function() {
+	console.log('Starting migration')
+	_msg.edit('*Starting migration to kuro v4.1.0, this might take a while depending how many stickers you have. Check the console.*')
+
 	try {
-		let oldfolder = './stickers'
-		let newfolder = assets
 
-		if (!fs.existsSync(oldfolder)) return kuro.edit(_msg, 'There doesn\'t seem to be an old sticker folder')
+		kuro.db.schema.table(_table, (table) => {
+			table.string('url')
+		}).then(() => {
+			// Done for now
+			kuro.db.table(_table).then((rows) => {
+				console.log('Found ' + rows.length + ' stickers, starting the upload to safe.moe')
 
-		fs.readdir(oldfolder, (err, files) => { // eslint-disable-line
-			files.forEach(file => {
-				// Seems we found some files. Let's asume they are stickers :araragi:
-				let name = file.slice(0, -4)
+				let counter = 1
+				for (let row of rows) {
+					if (row.url === '' || row.url === undefined || row.url === null) {
+						const fd = new FormData()
 
-				// Is the name of the sticker already used?
-				if (!_stickers.hasOwnProperty(name)) {
-					copyFile(`${oldfolder}/${file}`, `${newfolder}/${file}`)
-
-					kuro.db.table(_table).insert({
-						name: name,
-						file: file
-					})
-					.then(() => {
-						_stickers[name] = file
-						kuro.log(`Migrated ${file}`)
-					})
-					.catch((e) => kuro.error(e))
+						fd.append('files[]', fs.createReadStream(`${assets}/${row.file}`))
+						fd.pipe(concat({ encoding: 'buffer' }, data => {
+							axios.post('https://safe.moe/api/upload', data, { headers: fd.getHeaders() })
+							.then((response) => {
+								if (response.data.success === false) {
+									console.error('Error uploading to safe.moe: ', response.description)
+								} else {
+									kuro.db.table(_table).where('id', row.id).update(
+										{ url: response.data.files[0].url }
+									)
+									.then(() => {
+										console.log('Finished uploading ' + counter + '/' + rows.length + ': ' + row.name)
+										counter++
+										_stickers[row.name] = response.data.files[0].url
+										if (counter > rows.length) {
+											console.log('Migration finished, you can keep using Kuro like you normally would')
+											_msg.edit('*Migration finished, you can keep using Kuro like you normally would*')
+										}
+									})
+								}
+							})
+							.catch((err) => console.log(err))
+						}))
+					}
 				}
 			})
 		})
-		_msg.edit('Migration finished. Check console for logs.')
+
+		.catch((error) => { kuro.error(error) })
 	} catch (e) {
 		kuro.error(e)
 	}
@@ -231,29 +285,5 @@ exports.migrate = function() {
 
 exports.stickerCount = function() {
 	return Object.keys(_stickers).length
-}
-
-function copyFile(source, target) {
-	var cbCalled = false
-
-	var rd = fs.createReadStream(source)
-	rd.on('error', (err) => {
-		done(err)
-	})
-	var wr = fs.createWriteStream(target)
-	wr.on('error', (err) => {
-		done(err)
-	})
-	wr.on('close', () => {
-		done()
-	})
-	rd.pipe(wr)
-
-	function done(err) {
-		if (!cbCalled) {
-			if (err) kuro.error(err)
-			cbCalled = true
-		}
-	}
 }
 
