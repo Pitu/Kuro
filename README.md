@@ -20,7 +20,9 @@ So if you are upgrading to a new version, please run `!s migrate` to migrate you
 3. Run `kuro-cli`
 4. Follow the instructions on screen
 
-`kuro-cli` is a utility that will install and manage your Kuro installation. Whenever there's a new version available you can run `kuro-cli` and it will download, upgrade, update dependencies and restart automatically. Some options are not covered on the cli just yet, so you can go ahead and open `config.json` to look and modify them if you want.
+[kuro-cli](https://github.com/Pitu/kuro-cli) is a utility that will install and manage your Kuro installation. Whenever there's a new version available you can run `kuro-cli` and it will download, upgrade, update dependencies and restart automatically. Some options are not covered on the cli just yet, so you can go ahead and open `config.json` to look and modify them if you want.
+
+If you don't want to use `kuro-cli`, simply clone the repo, `npm install`, rename the `config.sample.json` to `config.json` and modify it's values with your data.
 
 Whenever you are running a selfbot, mobile push notifications don't work. This is caused by the bot being online, so Discord doesn't trigger a notification on your mobile device. This bothers me a lot, since I miss a lot of messages or pings whenever I'm away. If you use Telegram, you can create a bot token and put it in the `config.json` file, this way whenever you get a notification it will send you a message through it.
 
