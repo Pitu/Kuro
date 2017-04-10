@@ -9,9 +9,9 @@ exports.run = function(msg, args) {
 		if (typeof evaled !== 'string') {
 			evaled = require('util').inspect(evaled)
 		}
-		msg.channel.sendCode('xl', clean(evaled))
+		msg.edit(msg.content + '\n```js\n' + clean(evaled) + '\n```')
 	} catch (err) {
-		msg.channel.sendMessage('`ERROR` ```xl\n' + clean(err) + '\n```')
+		msg.edit(msg.content + '\n```css\nERROR:\n' + clean(err) + '\n```')
 		kuro.error(clean(err))
 	}
 }
