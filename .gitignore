@@ -4,6 +4,7 @@ files/
 stickers/
 .eslintrc.json
 config.js
+config.json
 db
 
 # Commands people shouldn't have :araragi:
