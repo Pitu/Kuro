@@ -67,7 +67,7 @@ exports.sendSticker = function(name) {
 	if (_stickers[name].startsWith('http')) {
 		_msg.edit({
 			embed: {
-				image: { url: 'https://lolisafe.moe/gQ7eQGym.jpg' }
+				image: { url: _stickers[name] }
 			}
 		});
 	} else {
