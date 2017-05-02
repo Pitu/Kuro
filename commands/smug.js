@@ -9,7 +9,11 @@ exports.run = function(msg) {
 				return msg.reply('***API ERROR***')
 			}
 			const resp = JSON.parse(body)
-			msg.channel.sendFile(`https://smugs.safe.moe/${resp.url}`, `${resp.imageID}.png`)
+			msg.edit({
+				embed: {
+					image: { url: `https://smugs.safe.moe/${resp.url}` }
+				}
+			});
 		}
 	})
 }

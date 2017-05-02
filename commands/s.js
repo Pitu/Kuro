@@ -36,7 +36,6 @@ exports.init = function(bot) {
 }
 
 exports.run = function(msg, args) {
-	console.log(args)
 	_msg = msg
 
 	if (!(args instanceof Array)) {
