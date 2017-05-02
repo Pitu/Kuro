@@ -6,6 +6,7 @@ stickers/
 config.js
 config.json
 db
+npm-debug.log
 
 # Commands people shouldn't have :araragi:
 commands/radio.js
