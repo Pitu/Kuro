@@ -1,6 +1,4 @@
 exports.run = function(msg) {
-	msg.delete()
-
 	require('request').get('http://smugs.safe.moe/api/v1/i/r', (error, response, body) => {
 		if (!error && response.statusCode === 200) {
 			try {
