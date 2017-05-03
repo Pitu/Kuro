@@ -20,7 +20,6 @@ exports.run = function(msg, args) {
 }
 
 function prepareEmbed(msg, item) {
-	console.log(item)
 	const { slug, synopsis, titles, averageRating, posterImage, episodeLength, showType } = item
 	const url = `https://kitsu.io/anime/${slug}`
 

@@ -20,7 +20,6 @@ exports.run = function(msg, args) {
 }
 
 function prepareEmbed(msg, item) {
-	console.log(item)
 	const { slug, synopsis, titles, popularityRank, posterImage, chapterCount, volumeCount, mangaType } = item
 	const url = `https://kitsu.io/manga/${slug}`
 
