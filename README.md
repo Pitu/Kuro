@@ -50,6 +50,9 @@ If you want me to include a module you've made, send a PR with your stuff and I'
 
 Each module has detailed instructions inside their own files. Take a look at them for further details on how to use.
 
+- `anime <name of the anime>`  
+  Shows the first occurence of the searched anime on kitsu.io and returns a summary of it
+
 - `emote [emote]`  
   Shows information about a custom emote.
 
@@ -73,6 +76,9 @@ Each module has detailed instructions inside their own files. Take a look at the
 
 - `mal`  
   Prints information about your MyAnimeList username.
+
+- `manga <name of the manga>`  
+  Shows the first occurence of the searched manga on kitsu.io and returns a summary of it
 
 - `members`  
   Shows the server's member count.
