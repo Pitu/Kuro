@@ -32,7 +32,7 @@ exports.run = function(msg) {
 		? `🎉 **${radioInfo.requested_by}** 🎉`
 		: `Requested by: [${radioInfo.requested_by}](https://forum.listen.moe/u/${radioInfo.requested_by})`
 		: '';
-	const song = `${nowplaying}\n\n${anime}\n${requestedBy}`;
+	const song = Discord.escapeMarkdown(`${nowplaying}\n\n${anime}\n${requestedBy}`);
 
 	msg.edit('', {
 		embed: {
