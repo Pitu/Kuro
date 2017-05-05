@@ -7,7 +7,7 @@ exports.run = function(msg, args) {
 	try {
 		var evaled = eval(code)
 		if (typeof evaled !== 'string') {
-			evaled = require('util').inspect(evaled)
+			evaled = require('util').inspect(evaled, { depth: 0 })
 		}
 		msg.edit(msg.content + '\n```js\n' + clean(evaled) + '\n```')
 	} catch (err) {
