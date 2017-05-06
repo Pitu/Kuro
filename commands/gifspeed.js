@@ -1,5 +1,5 @@
 exports.run = function(msg, args) {
-	if (!args[0]) return msg.channel.sendMessage('You need to provide a URL to a gif.')
+	if (!args[0]) return msg.channel.send('You need to provide a URL to a gif.')
 	msg.delete()
 
 	let speed = args[1] || 2
@@ -10,7 +10,7 @@ exports.run = function(msg, args) {
 	}, (err, res, body) => { // eslint-disable-line
 		try {
 			let error = JSON.parse(body)
-			return msg.channel.sendMessage(`**Error speeding up gif:**\n${JSON.stringify(error)}`)
+			return msg.channel.send(`**Error speeding up gif:**\n${JSON.stringify(error)}`)
 		} catch (er) {
 			return msg.channel.sendFile(body, 'x.gif')
 		}

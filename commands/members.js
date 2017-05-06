@@ -3,7 +3,7 @@ exports.init = function(bot) { kuro = bot }
 
 exports.run = function(msg) {
 	msg.delete()
-	msg.channel.sendMessage('', {
+	msg.channel.send('', {
 		embed: {
 			title: msg.guild.name,
 			description: `Member Count: ${msg.guild.memberCount}`,

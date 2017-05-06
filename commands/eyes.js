@@ -1,6 +1,6 @@
 exports.run = function(msg) {
 	msg.delete()
-	msg.channel.sendMessage('👀').then(msg => {
+	msg.channel.send('👀').then(msg => {
 		setTimeout(() => {
 			msg.edit('<:eyes2:248874616142036992>').then(msg => {
 				setTimeout(() => {

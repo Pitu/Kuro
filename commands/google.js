@@ -3,7 +3,7 @@ exports.init = function(bot) { kuro = bot }
 
 exports.run = function(msg, args) {
 	msg.delete()
-	msg.channel.sendMessage('', {
+	msg.channel.send('', {
 		embed: {
 			type: 'rich',
 			title: 'Google Search',
