@@ -8,19 +8,12 @@ if (!fs.existsSync(path.join(__dirname, 'config.json'))) {
 
 const config = require('./config.json')
 const Discord = require('discord.js')
-const knex = require('knex')(config.database)
 const chalk = require('chalk')
-
-let TelegramBot
-let telegram
-
-if (config.hasOwnProperty('telegramNotifications')) {
-	if (config.telegramNotifications.active) {
-		TelegramBot = require('node-telegram-bot-api')
-		telegram = new TelegramBot(config.telegramNotifications.botToken, { polling: false })
-	}
-}
-
+const knex = require('knex')({
+	client: 'sqlite3',
+	connection: { filename: path.join(__dirname, 'db') },
+	useNullAsDefault: true
+})
 
 let filesDirectory = path.join(__dirname, 'files')
 fs.existsSync(filesDirectory) || fs.mkdirSync(filesDirectory)
@@ -30,7 +23,6 @@ const kuro = new Discord.Client()
 
 // When ready
 kuro.once('ready', () => {
-
 	// Create database if it doesn't exist
 	fs.exists('db', (exists) => exists || fs.writeFile('db', ''))
 
@@ -39,33 +31,12 @@ kuro.once('ready', () => {
 
 	// Making config available on every module
 	kuro.config = config
-
 	kuro.loadCommands()
-
-	kuro.log('Kuro is ready!', 'green')
-	
 	kuro.user.setAFK(true)
+	kuro.log('Kuro is ready!', 'green')
 })
 
 kuro.on('message', (msg) => {
-
-	// If Telegram notifications are active, make extra checks
-	if (config.hasOwnProperty('telegramNotifications')) {
-		if (config.telegramNotifications.active) {
-			// Check if someone is sending us a DM
-			if (msg.channel.type === 'dm') {
-				if (msg.author.id !== kuro.user.id) {
-					return kuro.sendTelegramNotification('DM', msg.author.username, msg.content)
-				}
-			}
-
-			// Check if it's someone mentioning us
-			if (msg.isMentioned(kuro.user)) {
-				return kuro.sendTelegramNotification('Ping', msg.author.username, msg.content)
-			}
-		}
-	}
-
 	// Ignore if the message is not ours
 	if (msg.author.id !== kuro.user.id) return
 
@@ -98,6 +69,7 @@ kuro.on('disconnect', () => {
 	kuro.error('CLIENT: Disconnected!')
 	process.exit()
 })
+
 kuro.on('reconnecting', () => { kuro.log('CLIENT: Reconnecting...', 'green') })
 
 kuro.loadCommands = function() {
@@ -128,11 +100,6 @@ kuro.edit = function(msg, content, timeout = 3000) {
 	return msg.edit(content).then(() => {
 		setTimeout(() => msg.delete().catch(console.error), timeout)
 	})
-}
-
-kuro.sendTelegramNotification = (type, user, message) => {
-	const msg = `*${type}* from *${user}*: \n${message}`
-	telegram.sendMessage(config.telegramNotifications.userId, msg, { parse_mode: 'Markdown' })
 }
 
 kuro.log = function(msg, color) {
