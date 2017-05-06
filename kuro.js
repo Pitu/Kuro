@@ -43,6 +43,8 @@ kuro.once('ready', () => {
 	kuro.loadCommands()
 
 	kuro.log('Kuro is ready!', 'green')
+	
+	kuro.user.setAFK(true)
 })
 
 kuro.on('message', (msg) => {
