@@ -1,0 +1,12 @@
+{
+	"token": "",
+	"prefix": "!",
+	"MALusername": "",
+
+	"commandError": {
+		"sendToModule": true,
+		"module": "s",
+		"function": "run"
+	},
+	"embedColor": 15473237
+}
