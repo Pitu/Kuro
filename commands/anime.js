@@ -20,7 +20,7 @@ exports.run = function(msg, args) {
 }
 
 function prepareEmbed(msg, item) {
-	const { slug, synopsis, titles, averageRating, posterImage, episodeLength, showType } = item
+	const { slug, synopsis, titles, averageRating, posterImage, episodeCount, showType } = item
 	const url = `https://kitsu.io/anime/${slug}`
 
 	msg.edit('', {
@@ -38,7 +38,7 @@ function prepareEmbed(msg, item) {
 				},
 				{
 					name: '❯ Episodes',
-					value: episodeLength,
+					value: episodeCount,
 					inline: true
 				},
 				{
