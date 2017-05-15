@@ -22,7 +22,7 @@ fs.existsSync(filesDirectory) || fs.mkdirSync(filesDirectory)
 const kuro = new Discord.Client()
 
 // When ready
-kuro.once('ready', () => {
+kuro.on('ready', () => {
 	// Create database if it doesn't exist
 	fs.exists('db', (exists) => exists || fs.writeFile('db', ''))
 
