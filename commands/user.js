@@ -8,7 +8,7 @@ exports.run = function(msg, args) {
 	return msg.edit({
 		embed: {
 			title: `User info for ${user.user.username}`,
-			thumbnail: { url: `https://cdn.discordapp.com/avatars/${user.user.id}/${user.user.avatar}` },
+			thumbnail: { url: user.user.avatarURL },
 			fields: [
 				{
 					name: 'Username',
