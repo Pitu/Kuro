@@ -66,7 +66,8 @@ exports.sendSticker = function(name) {
 	if (_stickers[name].startsWith('http')) {
 		_msg.edit({
 			embed: {
-				image: { url: _stickers[name] }
+				image: { url: _stickers[name] },
+				color: 3290683
 			}
 		});
 	} else {
