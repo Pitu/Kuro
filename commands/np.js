@@ -22,7 +22,10 @@ exports.connectWS = function() {
 		}
 	})
 	ws.on('close', () => {
-		setTimeout(() => { this.connectWS(); }, 3000);
+		setTimeout(() => { this.connectWS(); }, 10000);
+	});
+	ws.on('error', err => {
+		console.log(err)
 	});
 }
 
