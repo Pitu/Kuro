@@ -20,7 +20,7 @@ exports.connectWS = function() {
 				const json = JSON.parse(data);
 				if (json === undefined) return;
 				if (json.reason !== undefined) return;
-				radioInfo = JSON.parse(json);
+				radioInfo = json;
 			}
 		} catch (err) {
 			console.error(err)
