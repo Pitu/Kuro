@@ -16,7 +16,12 @@ exports.connectWS = function() {
 	ws = new WebSocket('wss://listen.moe/api/v2/socket');
 	ws.on('message', data => {
 		try {
-			if (data) radioInfo = JSON.parse(data);
+			if (data) {
+				const json = JSON.parse(data);
+				if (json === undefined) return;
+				if (json.reason !== undefined) return;
+				radioInfo = JSON.parse(json);
+			}
 		} catch (err) {
 			console.error(err)
 		}
@@ -30,16 +35,19 @@ exports.connectWS = function() {
 }
 
 exports.run = function(msg) {
-	const nowplaying = `${radioInfo.artist_name ? `${radioInfo.artist_name} - ` : ''}${radioInfo.song_name}`;
+	if (!radioInfo) return msg.edit('No data available');
+
+	const artist = `${radioInfo.artist_name}` ? `${radioInfo.artist_name} - ` : '';
+	const nowplaying = `${artist}${radioInfo.song_name}`;
 	const anime = radioInfo.anime_name ? `Anime: ${radioInfo.anime_name}` : '';
 	const requestedBy = radioInfo.requested_by
 		? /\s/g.test(radioInfo.requested_by)
 		? `🎉 **${Discord.escapeMarkdown(radioInfo.requested_by)}** 🎉`
 		: `Requested by: [${Discord.escapeMarkdown(radioInfo.requested_by)}](https://forum.listen.moe/u/${radioInfo.requested_by})`
-		: ''; //the markdown for requested by needs to be escaped carefully to avoid escaping out the special event ** markdown
+		: '';
 	const song = `${Discord.escapeMarkdown(nowplaying)}\n\n${Discord.escapeMarkdown(anime)}\n${requestedBy}`;
 
-	msg.edit('', {
+	return msg.edit('', {
 		embed: {
 			type: 'rich',
 			color: kuro.config.embedColor,
